@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OttBrowser - Free Movies & TV</title>
+    <style>
+        :root {
+            --primary: #E50914;
+            --dark: #141414;
+            --light: #ffffff;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark);
+            color: var(--light);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
+        }
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), #141414), url('assets/hero.png');
+            background-size: cover;
+            background-position: center;
+        }
+        .content {
+            text-align: center;
+            z-index: 10;
+            max-width: 800px;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: #ccc;
+        }
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 3rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.5);
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            background-color: #f40612;
+        }
+        .features {
+            padding: 4rem 2rem;
+            background: #141414;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature-card {
+            background: #1f1f1f;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            p { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <div class="content">
+            <h1>Your World of Entertainment. Free.</h1>
+            <p>Movies, Series, and TV channels in one beautiful app for your Android TV.</p>
+            <!-- LINK TO LATEST RELEASE -->
+            <a href="https://github.com/YOUR_GITHUB_USERNAME/OttBrowser/releases/latest/download/app-release.apk" class="btn">Download APK</a>
+            <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">
+                Version 1.0.0 • Free & Open Source
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">📺</div>
+            <h3>Android TV Ready</h3>
+            <p>Designed specifically for large screens and remote control navigation.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Zero Config</h3>
+            <p>Just install and watch. No complex setup required.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🍿</div>
+            <h3>Unlimited Content</h3>
+            <p>Access thousands of movies and shows instantly.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 OttBrowser. Built with React Native.</p>
+    </footer>
+
+</body>
+</html>

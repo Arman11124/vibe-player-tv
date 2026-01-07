@@ -1,0 +1,12 @@
+INFO         | Android emulator version 36.3.10.0 (build_id 14472402) (CL:N/A)
+INFO         | Graphics backend: gfxstream
+DEBUG   | Current emulator version 36.3.10 is the same as the required version 36.3.10.
+INFO         | Found AVD name 'tvAVD'
+INFO         | Found AVD target architecture: arm64
+INFO         | argv[0]: '/Users/arman/Library/Android/sdk/emulator/emulator'; program directory: '/Users/arman/Library/Android/sdk/emulator'
+INFO         | AVD tvAVD has path /Users/arman/.android/avd/../avd/tvAVD.avd
+INFO         | trying to check whether /Users/arman/Library/Android/sdk is a valid sdk root
+WARNING      | /Users/arman/Library/Android/sdk/system-images/android-34/android-tv/arm64-v8a/ is not a valid directory.
+WARNING      | emulator has searched the above paths but found no valid sdk root directory.
+FATAL        | Broken AVD system path. Check your ANDROID_SDK_ROOT value [/Users/arman/Library/Android/sdk]!
+

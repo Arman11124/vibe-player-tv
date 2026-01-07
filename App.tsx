@@ -1,117 +1,141 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useState, useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { HomeScreen } from './src/screens/HomeScreen';
+import { SearchScreen } from './src/screens/SearchScreen';
+import { PlayerScreen } from './src/screens/PlayerScreen';
+import { DetailsScreen } from './src/screens/DetailsScreen';
+import { LogBox } from 'react-native';
+import { ContentItem, ContentType } from './src/services/TmdbService';
+import { Colors } from './src/theme/theme';
+import { fetchConfig, AppConfig } from './src/services/ConfigService';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+export type RootStackParamList = {
+  Home: undefined;
+  Search: undefined;
+  Details: { movieId: number; mediaType?: ContentType };
+  Player: { item: ContentItem; streamUrl?: string };
+};
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Stack = createStackNavigator<RootStackParamList>();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+// Type assertion for React Navigation container
+const NavigationContainerAny = NavigationContainer as unknown as React.ComponentType<{ children?: React.ReactNode }>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+// Ignore specific annoying logs
+LogBox.ignoreLogs([
+  '[Kinopoisk] No API Key provided',
+  'Kinopoisk fetch failed',
+  'Require cycle:',
+]);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAINTENANCE SCREEN
+// ─────────────────────────────────────────────────────────────────────────────
+
+const MaintenanceScreen: React.FC = () => (
+  <View style={styles.maintenanceContainer}>
+    <Text style={styles.maintenanceIcon}>🔧</Text>
+    <Text style={styles.maintenanceTitle}>Техническое обслуживание</Text>
+    <Text style={styles.maintenanceSubtitle}>
+      Приложение временно недоступно.{'\n'}Пожалуйста, попробуйте позже.
+    </Text>
+  </View>
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOADING SCREEN
+// ─────────────────────────────────────────────────────────────────────────────
+
+const LoadingScreen: React.FC = () => (
+  <View style={styles.loadingContainer}>
+    <ActivityIndicator size="large" color="#E50914" />
+  </View>
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN APP
+// ─────────────────────────────────────────────────────────────────────────────
+
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [config, setConfig] = useState<AppConfig | null>(null);
+
+  useEffect(() => {
+    const loadConfig = async () => {
+      console.log('[App] Loading remote config...');
+      const remoteConfig = await fetchConfig();
+      setConfig(remoteConfig);
+      setIsLoading(false);
+      console.log('[App] Config loaded. Maintenance:', remoteConfig.is_maintenance);
+    };
+
+    loadConfig();
+  }, []);
+
+  // Show loading while fetching config
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  // Show maintenance screen if enabled
+  if (config?.is_maintenance) {
+    return <MaintenanceScreen />;
+  }
+
+  // Normal app flow
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <NavigationContainerAny>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false, // Fullscreen immersion for OTT
+          cardStyle: { backgroundColor: Colors.background },
+        }}
+      >
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Player" component={PlayerScreen} />
+      </Stack.Navigator>
+    </NavigationContainerAny>
   );
-}
+};
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// STYLES
+// ─────────────────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#0D0D0D',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  maintenanceContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#8B0000', // Deep red background
+    padding: 40,
   },
-  sectionDescription: {
-    marginTop: 8,
+  maintenanceIcon: {
+    fontSize: 64,
+    marginBottom: 24,
+  },
+  maintenanceTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  maintenanceSubtitle: {
     fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+    color: '#FFCCCC',
+    textAlign: 'center',
+    lineHeight: 28,
   },
 });
 
