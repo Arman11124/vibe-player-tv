@@ -73,6 +73,9 @@ export const fetchFromTmdb = async (endpoint: string, params: Record<string, any
     const { data } = await axios.get<TmdbResponse>(
       `${BASE_URL}${endpoint}`,
       {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
         params: {
           api_key: TMDB_API_KEY,
           language: 'ru-RU',

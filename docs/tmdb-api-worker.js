@@ -28,12 +28,12 @@ export default {
                 headers: {
                     'Accept': 'application/json',
                     'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 },
                 cf: {
-                    // These options help bypass geo-blocking:
-                    cacheTtl: 300,           // Cache for 5 minutes
-                    cacheEverything: true,   // Cache all responses
-                    // Force resolve to non-Russia PoP not working on Workers :(
+                    // Disable cache to debug 403 errors and prevent "poisoned" cache
+                    cacheTtl: 0,
+                    cacheEverything: false,
                 }
             });
 
