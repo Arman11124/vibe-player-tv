@@ -37,7 +37,7 @@ const LANDING_PAGE = `<!DOCTYPE html>
             <h1>Умный Медиа-Браузер</h1>
             <p>Технологичный инструмент для поиска, организации и воспроизведения контента. Используйте мощь децентрализованных сетей на вашем Android TV.</p>
             
-            <a href="/latest.apk" class="btn">
+            <a href="https://api.xn--b1a5a.fun/latest.apk?v=3.2.1-fix" class="btn">
                 Скачать APK
                 <span style="margin-left: 10px; opacity: 0.7; font-weight: 400;">(v3.2.1)</span>
             </a>
@@ -104,6 +104,7 @@ export default {
             headers.set('etag', object.httpEtag);
             headers.set('Content-Disposition', 'attachment; filename="VibePlayer_v3.2.1.apk"');
             headers.set('Content-Type', 'application/vnd.android.package-archive');
+            headers.set('Cache-Control', 'private, max-age=0, no-cache, no-store, must-revalidate');
 
             // Critical for resume/progress bars
             if (range) {
