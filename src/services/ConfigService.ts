@@ -1,14 +1,10 @@
 /**
  * ConfigService.ts
  * Zero-Cost Remote Configuration via GitHub Gist
- * Fetches app config with cache-busting and safe fallback.
+ * Supports "Camouflaged" Base64 config for anti-censorship.
  */
 
-import axios from 'axios';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// TYPES
-// ─────────────────────────────────────────────────────────────────────────────
+import { Base64 } from 'js-base64';
 
 export interface PluginEntry {
     name: string;
@@ -17,12 +13,11 @@ export interface PluginEntry {
 }
 
 export interface AppConfig {
-    is_maintenance: boolean;
-    video_source_type: 'tmdb' | 'cdn' | 'hybrid';
-    pirate_api_token: string;
-    vibix_url?: string; // For Burn and Move (Domain Mirror)
-    ad_image_url: string;
-    ad_promo_text: string;
+    maintenance: boolean;
+    parser_url: string; // JacRed / Prowlarr URL
+    proxy_url?: string; // SOCKS5 for TorrServer
+    tmdb_key?: string;
+    banner_img?: string;
     plugins: PluginEntry[];
 }
 
@@ -30,66 +25,52 @@ export interface AppConfig {
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────────────────────
 
-// GitHub Gist raw URL - timestamp cache-busting handles freshness
-const CONFIG_URL =
-    'https://gist.githubusercontent.com/Arman11124/39e760ddf3fe246fe29e587a5d5c6d51/raw/config.json';
+// Raw link to the latest file in the Gist (auto-redirects to current filename)
+const GIST_ID = '39e760ddf3fe246fe29e587a5d5c6d51';
+const RAW_URL = `https://gist.githubusercontent.com/Arman11124/${GIST_ID}/raw`;
 
-/**
- * Safe Mode: Default fallback config if network fails.
- * Keeps app operational even without remote config.
- */
 const DEFAULT_CONFIG: AppConfig = {
-    is_maintenance: false,
-    video_source_type: 'tmdb',
-    pirate_api_token: '',
-    ad_image_url: '',
-    ad_promo_text: '',
+    maintenance: false,
+    parser_url: 'http://jacred.xyz', // Public fallback
     plugins: [],
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// FETCH CONFIG
+// LOGIC
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Fetches remote config from GitHub Gist.
- * Appends timestamp query param to bypass CDN/browser caching.
- *
- * @returns {Promise<AppConfig>} The app configuration.
- */
 export const fetchConfig = async (): Promise<AppConfig> => {
     try {
-        console.log('[Config] Fetching remote config...');
+        console.log('[Config] Fetching remote Gist...');
         const cacheBuster = `?t=${new Date().getTime()}`;
-        const response = await fetch(`${CONFIG_URL}${cacheBuster}`, {
-            headers: { 'Cache-Control': 'no-cache' }
-        });
+        const response = await fetch(`${RAW_URL}${cacheBuster}`);
 
         if (!response.ok) throw new Error('Network response was not ok');
 
-        const data = await response.json();
-        console.log('[Config] Loaded:', data);
-        return data;
+        const text = await response.text();
+        let data: any;
+
+        try {
+            // 1. Try JSON Parse first (Legacy Mode)
+            data = JSON.parse(text);
+            console.log('[Config] Loaded JSON (Legacy)');
+        } catch (e) {
+            // 2. Try Base64 Decode (Camouflage Mode)
+            try {
+                const decoded = Base64.decode(text);
+                data = JSON.parse(decoded);
+                console.log('[Config] Loaded Encoded (Camouflage)');
+            } catch (err) {
+                console.error('[Config] Failed to decode config', err);
+                return DEFAULT_CONFIG;
+            }
+        }
+
+        return { ...DEFAULT_CONFIG, ...data };
     } catch (error) {
-        // Network error, timeout, or parsing error → Safe Mode
-        console.error('[ConfigService] Failed to fetch config:', error);
-        console.log('[ConfigService] Falling back to DEFAULT_CONFIG (Safe Mode)');
+        console.error('[Config] Fetch failed', error);
         return DEFAULT_CONFIG;
     }
 }
 
-/**
- * Shortcut to check if app is in maintenance mode.
- *
- * @returns {Promise<boolean>} True if maintenance mode is active.
- */
-export async function isMaintenanceMode(): Promise<boolean> {
-    const config = await fetchConfig();
-    return config.is_maintenance;
-}
-
-export default {
-    fetchConfig,
-    isMaintenanceMode,
-    DEFAULT_CONFIG,
-};
+export default { fetchConfig };

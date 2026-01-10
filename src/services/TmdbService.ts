@@ -4,7 +4,7 @@ import { Alert } from 'react-native'; // Added for debug
 // TODO: Move to .env file via react-native-config
 export const TMDB_API_KEY = 'b93ef6c5dd891291cb040d2ffa577a7a';
 const BASE_URL = 'https://api.xn--b1a5a.fun/3';
-const IMAGE_BASE_URL = 'https://images.xn--b1a5a.fun/t/p';
+const IMAGE_BASE_URL = 'https://api.xn--b1a5a.fun/t/p'; // Routed via Smart Worker
 
 // Helper to construct image URLs via our proxy
 export const getImageUrl = (path: string | null | undefined, size: 'w500' | 'original' = 'w500'): string | null => {
@@ -98,7 +98,7 @@ export const fetchFromTmdb = async (endpoint: string, params: Record<string, any
         errorBody = JSON.stringify(error.response.data);
       }
     }
-    Alert.alert('API Error (v3.1.3)', `Endpoint: ${endpoint}\nStatus: ${error.response?.status}\nBody: ${errorBody}`);
+    Alert.alert('API Error (v3.2.0)', `Endpoint: ${endpoint}\nStatus: ${error.response?.status}\nBody: ${errorBody}`);
     return [];
   }
 };

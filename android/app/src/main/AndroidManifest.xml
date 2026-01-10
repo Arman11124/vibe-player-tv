@@ -5,6 +5,7 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
     <application
+      android:extractNativeLibs="true"
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
@@ -26,5 +27,6 @@
             <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
         </intent-filter>
       </activity>
+      <service android:name=".TorrService" android:foregroundServiceType="dataSync" android:exported="false" />
     </application>
 </manifest>

@@ -1,0 +1,13 @@
+name = "tmdb-proxy"
+main = "docs/tmdb-api-worker.js"
+compatibility_date = "2024-01-01"
+
+[[r2_buckets]]
+binding = "TMDB_CACHE_BUCKET"
+bucket_name = "tmdb-cache"
+preview_bucket_name = "tmdb-cache-preview"
+
+[[r2_buckets]]
+binding = "VIBE_STATIC_BUCKET"
+bucket_name = "vibe-static"
+preview_bucket_name = "vibe-static-preview"
