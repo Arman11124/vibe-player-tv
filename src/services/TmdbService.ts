@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Alert } from 'react-native'; // Added for debug
 
 // TODO: Move to .env file via react-native-config
 export const TMDB_API_KEY = 'b93ef6c5dd891291cb040d2ffa577a7a';
@@ -83,8 +84,10 @@ export const fetchFromTmdb = async (endpoint: string, params: Record<string, any
     return data.results
       .map(item => mapToContentItem(item, type))
       .filter(item => item.poster_path); // Filter out items with no poster
-  } catch (error) {
+  } catch (error: any) {
     console.warn(`[TMDB] Error fetching ${endpoint}:`, error);
+    // DEBUG: Show error on TV screen
+    Alert.alert('API Error', `Endpoint: ${endpoint}\n${error.message}\nStatus: ${error.response?.status}`);
     return [];
   }
 };
