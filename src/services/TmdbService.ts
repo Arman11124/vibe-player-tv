@@ -98,7 +98,7 @@ export const fetchFromTmdb = async (endpoint: string, params: Record<string, any
         errorBody = JSON.stringify(error.response.data);
       }
     }
-    Alert.alert('API Error (v3.2.0)', `Endpoint: ${endpoint}\nStatus: ${error.response?.status}\nBody: ${errorBody}`);
+    Alert.alert('API Error (v3.2.1)', `Endpoint: ${endpoint}\nStatus: ${error.response?.status}\nBody: ${errorBody}`);
     return [];
   }
 };

@@ -79,8 +79,8 @@ android {
         applicationId "com.ottbrowser"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 320
-        versionName "3.2.0"
+        versionCode 321
+        versionName "3.2.1"
     }
     
     // Create separate APK for each architecture (smaller size!)

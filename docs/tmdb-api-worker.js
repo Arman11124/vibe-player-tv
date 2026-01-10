@@ -27,8 +27,8 @@ const LANDING_PAGE = `<!DOCTYPE html>
         <div class="content">
             <h1>VibePlayer (OttBrowser)</h1>
             <p>Free 4K Movies & Series via P2P. No Subscription. No VPN.</p>
-            <a href="/latest.apk" class="btn">Download v3.2 (P2P Edition)</a>
-            <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">Version 3.2.0 • Android TV Ready</div>
+            <a href="/latest.apk" class="btn">Download v3.2.1 (P2P Refined)</a>
+            <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">Version 3.2.1 • Anti-Zombie Fixes • Android TV Ready</div>
         </div>
     </div>
     <div class="features">

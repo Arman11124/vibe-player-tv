@@ -58,7 +58,8 @@ class TorrServerController {
             if (attempts % 3 === 0) TorrServerModule.start(); // Kick again
         }
 
-        console.warn('[TorrCtrl] Failed to start daemon');
+        console.error('[TorrCtrl] Failed to start daemon after 10s');
+        throw new Error('TorrServer failed to start. Please check permissions or device compatibility.');
     }
 
     public async checkHealth(): Promise<boolean> {
@@ -136,9 +137,20 @@ class TorrServerController {
 
     public async dropAll() {
         try {
-            // In newer API, getting list and removing is cleaner, 
-            // but for now we trust the service management
-        } catch (e) { }
+            // Drop all torrents to free up RAM/Network
+            // Newer TorrServer API might use /torrents/action with "action": "drop"
+            // But usually just stopping the playback or session is enough.
+            // For now, valid MatriX command:
+            const list = await axios.get(`${TORR_API}/torrents/list`);
+            if (list.data && Array.isArray(list.data)) {
+                for (const t of list.data) {
+                    await axios.post(`${TORR_API}/torrents/action`, { action: "drop", hash: t.hash });
+                }
+            }
+            console.log('[TorrCtrl] Dropped all torrents');
+        } catch (e) {
+            console.warn('[TorrCtrl] Drop failed', e);
+        }
     }
 }
 

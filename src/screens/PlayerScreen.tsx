@@ -209,6 +209,11 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
         };
 
         resolveSource();
+
+        return () => {
+            console.log('[Player] Unmounting, cleaning up torrents...');
+            TorrServerController.dropAll();
+        };
     }, [initialUrl, item]);
 
 

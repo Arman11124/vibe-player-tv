@@ -81,13 +81,19 @@ class TorrService : Service() {
                 pb.redirectErrorStream(true)
                 
                 process = pb.start()
-                println("[TorrService] Started TorrServer at pid ${process?.toString()}")
+                println("[TorrService] Started TorrServer at pid ${process.toString()}")
                 
                 // Consume stdout to prevent buffer deadlock
+                // logic: Read in a streamlined loop, handling interrupts
                 val reader = BufferedReader(InputStreamReader(process!!.inputStream))
                 var line: String?
-                while (reader.readLine().also { line = it } != null) {
-                   // Log specific lines if needed: println("[TorrServer] $line")
+                try {
+                    while (reader.readLine().also { line = it } != null) {
+                        // Optional: Log only critical errors or startup messages
+                        // if (line?.contains("error", true) == true) println("[TorrServer] $line")
+                    }
+                } catch (e: Exception) {
+                    // Stream closed likely due to destroy()
                 }
 
             } catch (e: Exception) {
