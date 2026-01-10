@@ -38,11 +38,11 @@ const LANDING_PAGE = `<!DOCTYPE html>
             <p>Технологичный инструмент для поиска, организации и воспроизведения контента. Используйте мощь децентрализованных сетей на вашем Android TV.</p>
             
             <a href="https://api.xn--b1a5a.fun/latest.apk?v=3.2.1-fix" class="btn">
-                Скачать APK
+                Скачать APK (FIXED)
                 <span style="margin-left: 10px; opacity: 0.7; font-weight: 400;">(v3.2.1)</span>
             </a>
             
-            <div class="meta">Работает на Android TV • Без регистрации • Открытый код</div>
+            <div class="meta">Работает на Android TV • Обновлено: 3.2.1-FIX</div>
 
             <div class="features">
                 <div class="feature-card">
