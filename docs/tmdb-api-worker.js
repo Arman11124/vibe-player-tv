@@ -6,35 +6,62 @@ const TMDB_IMG_HOST = 'image.tmdb.org';
 const CACHE_TTL_SECONDS = 2592000; // 30 Days
 
 const LANDING_PAGE = `<!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OttBrowser - Free Movies & TV</title>
+    <title>VibePlayer - Медиа-Поисковик для Android TV</title>
     <style>
-        :root { --primary: #E50914; --dark: #141414; --light: #ffffff; }
-        body { margin: 0; background-color: var(--dark); color: var(--light); font-family: Helvetica, Arial, sans-serif; }
-        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(rgba(0,0,0,0.5), #141414), url('https://image.tmdb.org/t/p/original/mSDsSDwaP3E7Jjto22tPiDz8WK3.jpg'); background-size: cover; }
-        .content { text-align: center; max-width: 800px; padding: 20px; }
-        h1 { font-size: 3rem; margin-bottom: 1rem; }
-        .btn { display: inline-block; background-color: var(--primary); color: white; padding: 1rem 3rem; font-size: 1.2rem; font-weight: bold; text-decoration: none; border-radius: 4px; }
-        .features { padding: 4rem 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; max-width: 1000px; margin: 0 auto; text-align: center; }
-        .feature-card { background: #1f1f1f; padding: 2rem; border-radius: 8px; }
+        :root { --primary: #3b82f6; --dark: #0f172a; --light: #f8fafc; --text-dim: #94a3b8; }
+        body { margin: 0; background-color: var(--dark); color: var(--light); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); text-align: center; padding: 20px; box-sizing: border-box; }
+        .badge { background: rgba(59, 130, 246, 0.1); color: var(--primary); padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: inline-block; border: 1px solid rgba(59, 130, 246, 0.2); }
+        h1 { font-size: 3.5rem; margin: 0 0 1.5rem; letter-spacing: -0.05em; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { font-size: 1.25rem; color: var(--text-dim); max-width: 600px; margin: 0 auto 3rem; font-weight: 300; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; background-color: var(--primary); color: white; padding: 16px 48px; font-size: 1.1rem; font-weight: 600; text-decoration: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3); border: 1px solid rgba(255,255,255,0.1); }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4); background-color: #2563eb; }
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; width: 100%; max-width: 1200px; margin-top: 5rem; text-align: left; }
+        .feature-card { background: rgba(255, 255, 255, 0.03); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s ease; }
+        .feature-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.05); }
+        .feature-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+        h3 { font-size: 1.2rem; margin: 0 0 0.5rem; color: var(--light); }
+        .feature-desc { font-size: 0.95rem; margin: 0; color: var(--text-dim); }
+        .meta { margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-dim); opacity: 0.6; }
+        @media (max-width: 768px) { h1 { font-size: 2.5rem; } .features { grid-template-columns: 1fr; margin-top: 3rem; } }
     </style>
 </head>
 <body>
     <div class="hero">
         <div class="content">
-            <h1>VibePlayer (OttBrowser)</h1>
-            <p>Free 4K Movies & Series via P2P. No Subscription. No VPN.</p>
-            <a href="/latest.apk" class="btn">Download v3.2.1 (P2P Refined)</a>
-            <div style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">Version 3.2.1 • Anti-Zombie Fixes • Android TV Ready</div>
+            <span class="badge">VibePlayer 3.2.1</span>
+            <h1>Умный Медиа-Браузер</h1>
+            <p>Технологичный инструмент для поиска, организации и воспроизведения контента. Используйте мощь децентрализованных сетей на вашем Android TV.</p>
+            
+            <a href="/latest.apk" class="btn">
+                Скачать APK
+                <span style="margin-left: 10px; opacity: 0.7; font-weight: 400;">(v3.2.1)</span>
+            </a>
+            
+            <div class="meta">Работает на Android TV • Без регистрации • Открытый код</div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <span class="feature-icon">🔍</span>
+                    <h3>Поисковый Агрегатор</h3>
+                    <p class="feature-desc">Мгновенный поиск информации о медиа-контенте по множеству открытых источников и баз данных.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Высокая Скорость</h3>
+                    <p class="feature-desc">Оптимизированный движок воспроизведения с поддержкой аппаратного ускорения и 4K Ultra HD.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🛡️</span>
+                    <h3>Приватность</h3>
+                    <p class="feature-desc">Мы не храним вашу историю. Приложение работает локально, обеспечивая полную анонимность.</p>
+                </div>
+            </div>
         </div>
-    </div>
-    <div class="features">
-        <div class="feature-card"><h3>🚀 P2P Engine</h3><p>TorrServer Matrix inside.</p></div>
-        <div class="feature-card"><h3>🛡️ Smart Proxy</h3><p>Bypasses blocking automatically.</p></div>
-        <div class="feature-card"><h3>📺 TV Ready</h3><p>Optimized for D-Pad & 4K.</p></div>
     </div>
 </body>
 </html>`;
@@ -76,6 +103,7 @@ export default {
             object.writeHttpMetadata(headers);
             headers.set('etag', object.httpEtag);
             headers.set('Content-Disposition', 'attachment; filename="VibePlayer_v3.2.1.apk"');
+            headers.set('Content-Type', 'application/vnd.android.package-archive');
 
             // Critical for resume/progress bars
             if (range) {
