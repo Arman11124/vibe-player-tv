@@ -12,6 +12,7 @@ import { ContentItem } from '../services/TmdbService';
 import { Colors, Spacing } from '../theme/theme';
 import { Focusable } from './Focusable';
 import { Linking } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,6 +31,7 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
     onPlay,
     onSelectRecommendation,
 }) => {
+    const navigation = useNavigation<any>();
     const [recommendations, setRecommendations] = React.useState<ContentItem[]>([]);
     const [realRatings, setRealRatings] = React.useState<{ Source: string; Value: string }[]>([]);
     const [duration, setDuration] = React.useState<string>('');
@@ -128,9 +130,12 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
 
     if (!item) return null;
 
-    const backdropUrl = item.backdrop_path
-        ? `https://image.tmdb.org/t/p/original/${item.backdrop_path}`
-        : `https://image.tmdb.org/t/p/w500/${item.poster_path}`;
+    // Smart URL handling - check if already full URL
+    const getImageUrl = (path: string | null | undefined, size = 'original') => {
+        if (!path) return null;
+        return path.startsWith('http') ? path : `https://wsrv.nl/?url=https://image.tmdb.org/t/p/${size}${path}`;
+    };
+    const backdropUrl = getImageUrl(item.backdrop_path) || getImageUrl(item.poster_path, 'w500');
 
     return (
         <Modal
@@ -142,7 +147,7 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
             <View style={styles.container}>
                 {/* Backdrop with Overlay */}
                 <ImageBackground
-                    source={{ uri: backdropUrl }}
+                    source={{ uri: backdropUrl || '' }}
                     style={styles.backdrop}
                     resizeMode="cover"
                 >
@@ -231,12 +236,9 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
 
                                 <Focusable
                                     onPress={() => {
-                                        if (trailerKey) {
-                                            Linking.openURL(`https://www.youtube.com/watch?v=${trailerKey}`);
-                                        } else {
-                                            // Fallback: Auto-search on YouTube
-                                            Linking.openURL(`https://www.youtube.com/results?search_query=${encodeURIComponent(item.title + ' трейлер')}`);
-                                        }
+                                        // Use Yandex Video - works in Russia without VPN
+                                        const searchQuery = encodeURIComponent(item.title + ' трейлер');
+                                        Linking.openURL(`https://yandex.ru/video/search?text=${searchQuery}`);
                                     }}
                                     style={styles.actionButton}
                                     focusedStyle={styles.actionButtonFocused}
@@ -294,7 +296,7 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
                                                 <View style={{ flex: 1, borderRadius: 12, overflow: 'hidden' }}>
                                                     {rec.poster_path ? (
                                                         <ImageBackground
-                                                            source={{ uri: `https://image.tmdb.org/t/p/w300/${rec.poster_path}` }}
+                                                            source={{ uri: rec.poster_path?.startsWith('http') ? rec.poster_path : `https://wsrv.nl/?url=https://image.tmdb.org/t/p/w300${rec.poster_path}` }}
                                                             style={{ flex: 1 }}
                                                             imageStyle={{ borderRadius: 12 }}
                                                             resizeMode="cover"

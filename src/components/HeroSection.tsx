@@ -9,7 +9,7 @@ import {
     NativeSyntheticEvent,
     NativeScrollEvent
 } from 'react-native';
-import { ContentItem } from '../services/TmdbService';
+import { ContentItem, getImageUrl } from '../services/TmdbService';
 import { Colors, Spacing, Typography } from '../theme/theme';
 import { Focusable } from './Focusable';
 
@@ -57,9 +57,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ items, item, onPlayPre
     }
 
     const renderItem = (item: ContentItem, index: number) => {
-        const backdropUrl = item.backdrop_path
-            ? `https://image.tmdb.org/t/p/original${item.backdrop_path}`
-            : (item.poster_path ? `https://image.tmdb.org/t/p/original${item.poster_path}` : null);
+        const backdropUrl = getImageUrl(item.backdrop_path, 'original') || getImageUrl(item.poster_path, 'original');
 
         return (
             <View key={item.id} style={styles.slide}>

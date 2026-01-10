@@ -2,7 +2,15 @@ import axios from 'axios';
 
 // TODO: Move to .env file via react-native-config
 export const TMDB_API_KEY = 'b93ef6c5dd891291cb040d2ffa577a7a';
-const BASE_URL = 'https://api.themoviedb.org/3';
+const BASE_URL = 'https://api.xn--b1a5a.fun/3';
+const IMAGE_BASE_URL = 'https://images.xn--b1a5a.fun/t/p';
+
+// Helper to construct image URLs via our proxy
+export const getImageUrl = (path: string | null | undefined, size: 'w500' | 'original' = 'w500'): string | null => {
+  if (!path) return null;
+  if (path.startsWith('http')) return path; // Already full URL (e.g. from disk/cache)
+  return `${IMAGE_BASE_URL}/${size}${path}`;
+};
 
 export type ContentType = 'movie' | 'tv';
 

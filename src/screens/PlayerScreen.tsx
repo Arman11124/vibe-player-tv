@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { BackHandler, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import Video, { VideoRef } from 'react-native-video';
+import { WebView } from 'react-native-webview';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
 import { Colors } from '../theme/theme';
@@ -158,20 +159,42 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
         setPaused(p => !p);
     };
 
+    // Detect if URL is an iframe (embed) or direct stream
+    const isIframe = streamUrl && (streamUrl.includes('embed') || streamUrl.includes('iframe') || streamUrl.includes('videoframe'));
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={StyleSheet.absoluteFill} onTouchEnd={pokeControls}>
-                <Video
-                    ref={videoRef}
-                    source={{ uri: streamUrl || 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' }}
-                    style={styles.video}
-                    controls={false}
-                    paused={paused}
-                    resizeMode="contain"
-                    onProgress={(data) => setCurrentTime(data.currentTime)}
-                    onLoad={(data) => setDuration(data.duration)}
-                    onEnd={() => setShowControls(true)}
-                />
+                {isIframe ? (
+                    // WebView loads our proxy page which embeds the Vibix iframe
+                    // This ensures correct Referer header for Vibix domain verification
+                    <WebView
+                        source={{
+                            uri: `https://embed.xn--b1a5a.fun?url=${encodeURIComponent(streamUrl || '')}`
+                        }}
+                        style={styles.video}
+                        allowsFullscreenVideo={true}
+                        mediaPlaybackRequiresUserAction={false}
+                        javaScriptEnabled={true}
+                        domStorageEnabled={true}
+                        sharedCookiesEnabled={true}
+                        originWhitelist={['*']}
+                        onError={(e) => console.log('[Player] WebView error:', e.nativeEvent)}
+                    />
+                ) : (
+                    // Native Video for direct streams
+                    <Video
+                        ref={videoRef}
+                        source={{ uri: streamUrl || 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' }}
+                        style={styles.video}
+                        controls={false}
+                        paused={paused}
+                        resizeMode="contain"
+                        onProgress={(data) => setCurrentTime(data.currentTime)}
+                        onLoad={(data) => setDuration(data.duration)}
+                        onEnd={() => setShowControls(true)}
+                    />
+                )}
             </View>
 
             {showControls && (

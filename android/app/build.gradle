@@ -79,8 +79,18 @@ android {
         applicationId "com.ottbrowser"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 25
+        versionName "3.1.0"
+    }
+    
+    // Create separate APK for each architecture (smaller size!)
+    splits {
+        abi {
+            enable true
+            reset()
+            include "arm64-v8a", "armeabi-v7a"  // Most TVs are ARM
+            universalApk false  // Don't create fat APK
+        }
     }
     signingConfigs {
         debug {

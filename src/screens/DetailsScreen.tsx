@@ -19,7 +19,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { BlurView } from '@react-native-community/blur';
 import { RootStackParamList } from '../../App';
-import { getMovieDetails, fetchRecommendations, MovieDetails, ContentType, ContentItem } from '../services/TmdbService';
+import { getMovieDetails, fetchRecommendations, MovieDetails, ContentType, ContentItem, getImageUrl } from '../services/TmdbService';
 import { FavoritesService } from '../services/FavoritesService';
 import { Focusable } from '../components/Focusable';
 import { TrailerModal } from '../components/TrailerModal';
@@ -30,7 +30,6 @@ import { executePlugin } from '../services/PluginService';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const BACKDROP_HEIGHT = SCREEN_HEIGHT * 0.7; // Increased backdrop height
-const IMAGE_BASE = 'https://image.tmdb.org/t/p/original';
 
 type DetailsScreenNav = StackNavigationProp<RootStackParamList, 'Details'>;
 type DetailsScreenRoute = RouteProp<RootStackParamList, 'Details'>;
@@ -139,21 +138,35 @@ export const DetailsScreen: React.FC<Props> = ({ navigation, route }) => {
 
             console.log('[Details] Searching plugins...', config.plugins);
 
-            // 1. Iterate Plugins
-            for (const plugin of config.plugins || []) {
-                if (!plugin.active) continue;
-
-                foundUrl = await executePlugin(plugin.js_bundle_url, {
+            // 1. Try Vibix directly (Built-in handler)
+            if (details.imdb_id) {
+                console.log('[Details] Trying Vibix with IMDb:', details.imdb_id);
+                foundUrl = await executePlugin('vibix', {
                     imdb_id: details.imdb_id,
                     tmdb_id: details.id,
                     title: details.title,
                     year: details.release_date?.split('-')[0],
                     type: details.media_type
                 }, config);
+            }
 
-                if (foundUrl) {
-                    console.log('[Details] Source found:', plugin.name);
-                    break;
+            // 2. If Vibix failed, try configured plugins
+            if (!foundUrl) {
+                for (const plugin of config.plugins || []) {
+                    if (!plugin.active) continue;
+
+                    foundUrl = await executePlugin(plugin.js_bundle_url, {
+                        imdb_id: details.imdb_id,
+                        tmdb_id: details.id,
+                        title: details.title,
+                        year: details.release_date?.split('-')[0],
+                        type: details.media_type
+                    }, config);
+
+                    if (foundUrl) {
+                        console.log('[Details] Source found:', plugin.name);
+                        break;
+                    }
                 }
             }
 
@@ -184,11 +197,14 @@ export const DetailsScreen: React.FC<Props> = ({ navigation, route }) => {
         }
     };
 
-    // Handle Trailer button - opens in-app WebView modal
+    // Handle Trailer button - opens Yandex Video search (works in Russia without VPN)
     const handleTrailer = () => {
-        if (details?.trailerKey) {
-            console.log('[Details] Opening trailer in WebView:', details.trailerKey);
-            setTrailerVisible(true);
+        if (details) {
+            const searchQuery = encodeURIComponent(details.title + ' трейлер');
+            console.log('[Details] Opening Yandex Video:', searchQuery);
+            import('react-native').then(({ Linking }) => {
+                Linking.openURL(`https://yandex.ru/video/search?text=${searchQuery}`);
+            });
         }
     };
 
@@ -245,9 +261,7 @@ export const DetailsScreen: React.FC<Props> = ({ navigation, route }) => {
         );
     }
 
-    const backdropUri = details.backdrop_path
-        ? `${IMAGE_BASE}${details.backdrop_path}`
-        : null;
+    const backdropUri = getImageUrl(details.backdrop_path, 'original');
 
     return (
         <View style={styles.container}>

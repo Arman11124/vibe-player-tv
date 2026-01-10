@@ -6,7 +6,7 @@ import {
     Text,
     View,
 } from 'react-native';
-import { ContentItem } from '../services/TmdbService';
+import { ContentItem, getImageUrl } from '../services/TmdbService';
 import { Colors, Spacing } from '../theme/theme';
 import { Focusable } from './Focusable';
 
@@ -38,7 +38,9 @@ export const MovieCard: React.FC<MovieCardProps> = ({
             <View style={styles.inner}>
                 {item.poster_path && !imageError ? (
                     <Image
-                        source={{ uri: `https://image.tmdb.org/t/p/w500/${item.poster_path}` }}
+                        source={{
+                            uri: getImageUrl(item.poster_path) || undefined
+                        }}
                         style={styles.poster as ImageStyle}
                         resizeMode="cover"
                         onError={(e) => {

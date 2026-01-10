@@ -31,7 +31,7 @@ export const SearchScreen: React.FC<{ navigation: SearchScreenNav }> = ({ naviga
         setLoading(true);
         try {
             // Search Multi (Movies + TV)
-            const response = await axios.get(`https://api.themoviedb.org/3/search/multi`, {
+            const response = await axios.get(`https://api.xn--b1a5a.fun/3/search/multi`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'ru-RU',
@@ -90,7 +90,7 @@ export const SearchScreen: React.FC<{ navigation: SearchScreenNav }> = ({ naviga
         setQuery(MOODS.find(m => m.genres === moodGenres)?.label || "Подборка...");
         try {
             // Use discovery endpoint for moods
-            const response = await axios.get(`https://api.themoviedb.org/3/discover/movie`, {
+            const response = await axios.get(`https://api.xn--b1a5a.fun/3/discover/movie`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'ru-RU',

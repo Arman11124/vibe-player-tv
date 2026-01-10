@@ -1,0 +1,1366 @@
+[
+  {
+    "id": 1143242,
+    "title": "Джентльмены",
+    "year": 2019,
+    "rating": 8.7,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1599028/637271d5-61b4-4e46-ac83-6d07494c7645/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/tintsaQ0WLzZsTMkTiqtMB3rfc8.jpg",
+    "description": "Гангстеры всех мастей делят наркоферму. Закрученная экшен-комедия Гая Ричи с Мэттью Макконахи и Хью Грантом",
+    "genres": [
+      "криминал",
+      "комедия",
+      "боевик"
+    ],
+    "countries": [
+      "США",
+      "Великобритания",
+      "Франция",
+      "Япония",
+      "Чехия"
+    ],
+    "duration": 113,
+    "isSeries": false
+  },
+  {
+    "id": 1318972,
+    "title": "Гнев человеческий",
+    "year": 2021,
+    "rating": 7.7,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/90d57813-387c-44c4-81c1-ecddb3c417a5/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/70AV2Xx5FQYj20labp0EGdbjI6E.jpg",
+    "description": "Хладнокровный Эйч идет по следу грабителей, убивших его сына. Джейсон Стэйтем в брутальном боевике Гая Ричи",
+    "genres": [
+      "боевик",
+      "триллер"
+    ],
+    "countries": [
+      "Великобритания",
+      "США"
+    ],
+    "duration": 119,
+    "isSeries": false
+  },
+  {
+    "id": 1108577,
+    "title": "Зеленая книга",
+    "year": 2018,
+    "rating": 8.5,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4483445/1e2ed281-b1e8-4083-b721-3ece7afc1031/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/5En0fmDagt3Pk8d7P3uTwfeQceg.jpg",
+    "description": "Путешествие итальянца-вышибалы и чернокожего пианиста по Америке 1960-х. «Оскар» за лучший фильм",
+    "genres": [
+      "биография",
+      "комедия",
+      "драма"
+    ],
+    "countries": [
+      "США",
+      "Китай"
+    ],
+    "duration": 130,
+    "isSeries": false
+  },
+  {
+    "id": 1188529,
+    "title": "Достать ножи",
+    "year": 2019,
+    "rating": 8.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10893610/e8aa9797-2c24-45fd-a53e-34cf91a8c27c/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/4HWAQu28e2yaWrtupFPGFkdNU7V.jpg",
+    "description": "Частный детектив ведет запутанное дело о смерти известного писателя. Криминальная комедия с Дэниэлом Крэйгом",
+    "genres": [
+      "детектив",
+      "комедия",
+      "драма",
+      "криминал"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 130,
+    "isSeries": false
+  },
+  {
+    "id": 5047468,
+    "title": "Холоп 2",
+    "year": 2023,
+    "rating": 7.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10592371/ab964fb1-c8d1-4a78-8d49-c754d756d488/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/6e4aobelFez3PYtRa1q6OS9cR7c.jpg",
+    "description": "Гриша решает перевоспитать заносчивую мажорку и отправляет ее в 1812 год. В роли Наполеона — Павел Деревянко",
+    "genres": [
+      "комедия"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 119,
+    "isSeries": false
+  },
+  {
+    "id": 4959134,
+    "title": "По щучьему велению",
+    "year": 2023,
+    "rating": 7.8,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10900341/b3ed4aa7-c38c-4a35-a505-aaa6372ad9da/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/gPqxXEOuzC7e1yAX4RzELKzxvMJ.jpg",
+    "description": "Чудо-рыба помогает непутевому Емеле завоевать сердце царской дочери. Сказочный хит с Никитой Кологривым",
+    "genres": [
+      "фэнтези",
+      "приключения",
+      "семейный"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 115,
+    "isSeries": false
+  },
+  {
+    "id": 1326397,
+    "title": "Батя",
+    "year": 2020,
+    "rating": 7.9,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/907e3552-9a1e-48d1-8a01-d013a76a8343/300x450",
+    "backdrop": "https://avatars.mds.yandex.net/get-ott/239697/2a000001800b131e914ef69b9b828f841166/1344x756",
+    "description": "По дороге на юбилей отца Максим вспоминает свое детство в 1990-х. Комедия с Владимиром Вдовиченковым",
+    "genres": [
+      "комедия",
+      "мелодрама"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 76,
+    "isSeries": false
+  },
+  {
+    "id": 927898,
+    "title": "Переводчик",
+    "year": 2022,
+    "rating": 7.9,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1898899/5c775217-8796-4c7a-aba8-e4c6d48a6c36/300x450",
+    "backdrop": "https://avatars.mds.yandex.net/get-ott/224348/2a00000188dee8324bd82051070f728e1931/1344x756",
+    "description": "Ахмед спас Джона от смерти, и теперь тот должен вернуть долг. Гай Ричи как никогда серьезен — и как всегда крут",
+    "genres": [
+      "боевик",
+      "триллер",
+      "военный",
+      "история",
+      "драма"
+    ],
+    "countries": [
+      "Великобритания",
+      "Испания",
+      "США"
+    ],
+    "duration": 123,
+    "isSeries": false
+  },
+  {
+    "id": 5405057,
+    "title": "Анора",
+    "year": 2024,
+    "rating": 6.4,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10953618/b7c8240b-e6e8-4b27-9d8e-0eada5dc50ac/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/qvyOfwTC3qdbzkqdXWSSEMHtjBZ.jpg",
+    "description": "Сын русского олигарха находит родную душу в нью-йоркской танцовщице. Лучший фильм и еще четыре «Оскара»",
+    "genres": [
+      "драма",
+      "мелодрама",
+      "комедия"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 139,
+    "isSeries": false
+  },
+  {
+    "id": 839954,
+    "title": "Легенда",
+    "year": 2015,
+    "rating": 7.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1600647/55db3c5f-837f-478e-b2ba-67872bf7b57c/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/v8zOcynvSd6IW3FzZrvst2HJ53s.jpg",
+    "description": "Гангстеры-близнецы завоевывают Лондон 1960-х. Драма о знаменитых преступниках с двойной ролью Тома Харди",
+    "genres": [
+      "криминал",
+      "триллер",
+      "драма"
+    ],
+    "countries": [
+      "Великобритания",
+      "Франция",
+      "США"
+    ],
+    "duration": 131,
+    "isSeries": false
+  },
+  {
+    "id": 1183582,
+    "title": "Холоп",
+    "year": 2019,
+    "rating": 7.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10893610/564d729c-ea30-42df-977f-e0cd6c0dd8ef/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/idppqwB7aCPEYh3BflEsTvug0Kf.jpg",
+    "description": "Мажор просыпается в деревне XIX века. Комедия с Милошем Биковичем, которая стала рекордсменом проката",
+    "genres": [
+      "комедия",
+      "мелодрама"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 109,
+    "isSeries": false
+  },
+  {
+    "id": 4476147,
+    "title": "Кракен",
+    "year": 2025,
+    "rating": 7.7,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10809116/b722ab4d-497b-4a62-b243-95ca989401ff/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/k8NQUrnUtX20bCreOKyEv9J7U3S.jpg",
+    "description": "Подводники сталкиваются с морским монстром во время важной миссии. Фантастический экшен с Александром Петровым",
+    "genres": [
+      "приключения",
+      "фантастика",
+      "боевик",
+      "драма"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 134,
+    "isSeries": false
+  },
+  {
+    "id": 775276,
+    "title": "Зверополис",
+    "year": 2016,
+    "rating": 8.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4716873/893bba73-3105-4944-8d18-a38f929f2759/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/9tOkjBEiiGcaClgJFtwocStZvIT.jpg",
+    "description": "Отважная крольчиха делает карьеру в полиции звериного города. Оскароносная комедия с серьезным подтекстом",
+    "genres": [
+      "мультфильм",
+      "комедия",
+      "криминал",
+      "детектив",
+      "приключения",
+      "семейный",
+      "боевик"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 108,
+    "isSeries": false
+  },
+  {
+    "id": 4626783,
+    "title": "Пчеловод",
+    "year": 2024,
+    "rating": 7.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4483445/197ef075-aa45-4881-80c5-a182e8847f65/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/4MCKNAc6AbWjEsM2h9Xc29owo4z.jpg",
+    "description": "Он мстит за обманутую пенсионерку — и за свою пасеку. Самый яростный боевик года",
+    "genres": [
+      "боевик",
+      "криминал"
+    ],
+    "countries": [
+      "США",
+      "Великобритания"
+    ],
+    "duration": 105,
+    "isSeries": false
+  },
+  {
+    "id": 4860213,
+    "title": "Субстанция",
+    "year": 2024,
+    "rating": 6.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10703959/49123e40-fc14-4849-8d0a-aca4ed2bb0bb/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/jocCWIF8YksHuTPhFUSxevz69Qm.jpg",
+    "description": "Вы когда-нибудь мечтали стать лучшей версией себя? Фильм-сенсация с «Оскаром» за лучший грим и прически",
+    "genres": [
+      "ужасы",
+      "драма"
+    ],
+    "countries": [
+      "Великобритания",
+      "США",
+      "Франция"
+    ],
+    "duration": 141,
+    "isSeries": false
+  },
+  {
+    "id": 4542208,
+    "title": "Вышка",
+    "year": 2022,
+    "rating": 6.8,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4774061/21625a72-ee34-4151-aa9c-844c40f610fd/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/1DBDwevWS8OhiT3wqqlW7KGPd6m.jpg",
+    "description": "Две подруги застревают на заброшенной 600-метровой вышке в пустыне. Головокружительный триллер о выживании",
+    "genres": [
+      "триллер"
+    ],
+    "countries": [
+      "Великобритания",
+      "США"
+    ],
+    "duration": 107,
+    "isSeries": false
+  },
+  {
+    "id": 1405508,
+    "title": "Операция «Фортуна»: Искусство побеждать",
+    "year": 2022,
+    "rating": 7.1,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/f9cf62b9-074d-4022-8e6b-8683c8f18318/300x450",
+    "backdrop": "https://avatars.mds.yandex.net/get-ott/2419418/2a00000189886f54831942cee9f183dccbb9/1344x756",
+    "description": "Команда шпионов пытается сорвать продажу супероружия. Джейсон Стэйтем и Хью Грант в экшен-комедии Гая Ричи",
+    "genres": [
+      "боевик",
+      "комедия"
+    ],
+    "countries": [
+      "Великобритания",
+      "США"
+    ],
+    "duration": 114,
+    "isSeries": false
+  },
+  {
+    "id": 463634,
+    "title": "Веном",
+    "year": 2018,
+    "rating": 6.9,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1704946/16b82307-bdcc-4b9b-a427-55a07771c33a/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/hNsYUryiwxcdeTMkaBcPF3iEg0p.jpg",
+    "description": "В настырного журналиста вселяется симбиот. Том Харди в образе обаятельного суперзлодея из комиксов Marvel",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "триллер",
+      "ужасы"
+    ],
+    "countries": [
+      "США",
+      "Китай"
+    ],
+    "duration": 112,
+    "isSeries": false
+  },
+  {
+    "id": 1043758,
+    "title": "Паразиты",
+    "year": 2019,
+    "rating": 8.1,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/aae3a928-6465-4bed-9af4-16929a44fd79/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/hiKmpZMGZsrkA3cdce8a7Dpos1j.jpg",
+    "description": "Семья бедняков обманом получает работу в доме богачей. Южнокорейская драмеди, которая взяла четыре «Оскара»",
+    "genres": [
+      "драма",
+      "триллер",
+      "комедия"
+    ],
+    "countries": [
+      "Корея Южная"
+    ],
+    "duration": 131,
+    "isSeries": false
+  },
+  {
+    "id": 843649,
+    "title": "Мстители: Война бесконечности",
+    "year": 2018,
+    "rating": 8.1,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1773646/af92d310-4ae5-4daa-b42c-5bcc380c2e6e/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/mDfJG3LC3Dqb67AZ52x3Z0jU0uB.jpg",
+    "description": "Титан Танос вынашивает страшный план — угрозу всей Вселенной. Предпоследний фильм о суперкоманде Marvel",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "приключения"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 149,
+    "isSeries": false
+  },
+  {
+    "id": 5078983,
+    "title": "Мажор в Сочи",
+    "year": 2022,
+    "rating": 7.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10900341/262b868c-6c7b-4d7b-90af-60e06384b77f/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/yKBRFSCkwd94lM5dLa7HuUqM7H.jpg",
+    "description": "Как изменить жизнь и защитить ребенка, если привык решать проблемы силой? Душевный экшен с Павлом Прилучным",
+    "genres": [
+      "приключения",
+      "комедия"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 109,
+    "isSeries": false
+  },
+  {
+    "id": 843650,
+    "title": "Мстители: Финал",
+    "year": 2019,
+    "rating": 7.9,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1600647/ae22f153-9715-41bb-adb4-f648b3e16092/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/9wXPKruA6bWYk2co5ix6fH59Qr8.jpg",
+    "description": "Железный человек, Тор и другие пытаются переиграть Таноса. Эпохальное завершение супергеройской франшизы",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "драма",
+      "приключения"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 181,
+    "isSeries": false
+  },
+  {
+    "id": 409424,
+    "title": "Дюна",
+    "year": 2021,
+    "rating": 7.7,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/9eb762d6-4cdd-464f-9937-aebf30067acc/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/jYEW5xZkZk2WTrdbMGAPFuBqbDc.jpg",
+    "description": "Атрейдесы прибывают на планету, где им никто не рад. Фантастический эпос Дени Вильнёва с шестью «Оскарами»",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "драма",
+      "приключения"
+    ],
+    "countries": [
+      "США",
+      "Канада",
+      "Венгрия"
+    ],
+    "duration": 155,
+    "isSeries": false
+  },
+  {
+    "id": 5452393,
+    "title": "Граф Монте-Кристо",
+    "year": 2024,
+    "rating": 8.1,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10703959/54490542-cc6e-4019-bb35-79aa67195fbe/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/bxT8jFcWNuWK5LmVo1oGhAm4dnZ.jpg",
+    "description": "Сбежав из тюрьмы, моряк меняет облик, чтобы отомстить обидчикам. Масштабная экранизация романа Александра Дюма",
+    "genres": [
+      "боевик",
+      "триллер",
+      "драма",
+      "мелодрама",
+      "приключения",
+      "история"
+    ],
+    "countries": [
+      "Франция",
+      "Бельгия"
+    ],
+    "duration": 178,
+    "isSeries": false
+  },
+  {
+    "id": 5235968,
+    "title": "Кентавр",
+    "year": 2023,
+    "rating": 7.8,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10812607/f8f91f45-e309-469b-8066-741d2a34a712/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/eLtWcXZAv6nBbnRC2F4VOE9qgDI.jpg",
+    "description": "Беззащитная девушка оказывается самой опасной пассажиркой ночного таксиста. Виртуозный триллер с Юрой Борисовым",
+    "genres": [
+      "триллер",
+      "драма",
+      "криминал"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 101,
+    "isSeries": false
+  },
+  {
+    "id": 977288,
+    "title": "Поезд в Пусан",
+    "year": 2016,
+    "rating": 7.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1898899/12feddd0-1f10-4608-b6c7-2d0bad2bdceb/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/fVpFOcQyHJM2di9upgSIwWD5wac.jpg",
+    "description": "Беспощадный вирус превращает скоростной поезд в смертельную ловушку. Самый популярный южнокорейский хоррор",
+    "genres": [
+      "ужасы",
+      "боевик"
+    ],
+    "countries": [
+      "Корея Южная"
+    ],
+    "duration": 118,
+    "isSeries": false
+  },
+  {
+    "id": 976642,
+    "title": "Последний богатырь",
+    "year": 2017,
+    "rating": 7.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10768063/66f7e00a-10d6-478c-9f06-0c506183bee2/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/c4jwzF8rAD3c2YpPlRwrDAxWzT3.jpg",
+    "description": "Лжемаг случайно попадает в волшебную страну. Захватывающая сказка, в которой добро и зло поменялись местами",
+    "genres": [
+      "фэнтези",
+      "комедия",
+      "приключения",
+      "семейный"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 114,
+    "isSeries": false
+  },
+  {
+    "id": 679486,
+    "title": "Тайна Коко",
+    "year": 2017,
+    "rating": 8.7,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1946459/6e11a16e-c9e7-491f-9162-01098a7d8dd9/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/wSJHuSD7ojzoXifWjOAjxV7UpEL.jpg",
+    "description": "Юный музыкант Мигель попадает в мир мертвых. Трогательная история о любви без границ, получившая два «Оскара»",
+    "genres": [
+      "мультфильм",
+      "фэнтези",
+      "комедия",
+      "приключения",
+      "семейный",
+      "музыка"
+    ],
+    "countries": [
+      "США",
+      "Мексика"
+    ],
+    "duration": 105,
+    "isSeries": false
+  },
+  {
+    "id": 4414587,
+    "title": "Министерство неджентльменских дел",
+    "year": 2024,
+    "rating": 7.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10671298/72d3ef84-c785-46aa-8a8d-16e0f0847c56/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/AfKwzRBXyzcalN5Kaw6hhEZj7cl.jpg",
+    "description": "Отряду авантюристов поручают невыполнимую миссию. Новый фильм Гая Ричи и продюсера «Пиратов Карибского моря»",
+    "genres": [
+      "боевик",
+      "драма",
+      "военный",
+      "история",
+      "комедия"
+    ],
+    "countries": [
+      "США",
+      "Великобритания",
+      "Турция"
+    ],
+    "duration": 119,
+    "isSeries": false
+  },
+  {
+    "id": 5129252,
+    "title": "Беспринципные в деревне",
+    "year": 2023,
+    "rating": 6.6,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4774061/d68d8ae2-ec3d-47f6-9991-7aba20890e0e/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/oDWj8HeSNeUiXvNw6hCcrESMd5T.jpg",
+    "description": "Как жители Патриарших устроятся в русской глубинке? Комедия, в которой побег от суеты пошел не по плану",
+    "genres": [
+      "комедия"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 86,
+    "isSeries": false
+  },
+  {
+    "id": 1109271,
+    "title": "Майор Гром: Чумной Доктор",
+    "year": 2021,
+    "rating": 7.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10812607/1af2d052-6227-43b2-880b-f7e505478e58/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/1sEtjLhUyM5z3P1fSYTm6eTQdm8.jpg",
+    "description": "Самый брутальный коп Петербурга против мстителя в маске. Фееричный экшен, покоривший топ Кинопоиска и Netflix",
+    "genres": [
+      "боевик",
+      "криминал",
+      "детектив",
+      "комедия"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 136,
+    "isSeries": false
+  },
+  {
+    "id": 930878,
+    "title": "Т-34",
+    "year": 2018,
+    "rating": 6.9,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1600647/2f7d9ac7-36e3-4fe4-89c3-604b19ef27bb/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/daJjtHlqvph7R1Uw1DFUIF0FJe4.jpg",
+    "description": "Лейтенант готовит побег из концлагеря на танке. Брутальный патриотический блокбастер с Александром Петровым",
+    "genres": [
+      "драма",
+      "военный",
+      "боевик",
+      "история"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 139,
+    "isSeries": false
+  },
+  {
+    "id": 4370148,
+    "title": "Чебурашка",
+    "year": 2022,
+    "rating": 7.5,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10671298/be64a414-cc47-4050-9f87-7aa635458950/300x450",
+    "backdrop": "https://avatars.mds.yandex.net/get-ott/1534341/2a0000018dcfe0fbd91bb67850ac478d0381/1344x756",
+    "description": "Дед Гена защищает чудо-зверя от дамы со скверным характером. Самый кассовый российский фильм в истории ",
+    "genres": [
+      "семейный",
+      "комедия",
+      "фэнтези"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 113,
+    "isSeries": false
+  },
+  {
+    "id": 409600,
+    "title": "Доктор Стрэндж",
+    "year": 2016,
+    "rating": 7.5,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/bb966b79-5b10-485d-88d7-fb6aeb79b185/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/3zvZ699gMW2RhWc0GisIukzq0Ls.jpg",
+    "description": "После автокатастрофы хирург становится верховным защитником Земли. В роли супергероя — Бенедикт Камбербэтч",
+    "genres": [
+      "фантастика",
+      "фэнтези",
+      "боевик",
+      "приключения"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 115,
+    "isSeries": false
+  },
+  {
+    "id": 1267348,
+    "title": "Джон Уик 4",
+    "year": 2023,
+    "rating": 7.6,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/62c1301b-c913-4b3c-af87-74934ae1ec93/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/7I6VUdPj6tQECNHdviJkUHD2u89.jpg",
+    "description": "Чтобы обрести свободу, киллер-изгой бросает вызов Правлению кланов. В роли злодея — жуткий Билл Скарсгард",
+    "genres": [
+      "боевик",
+      "триллер",
+      "криминал"
+    ],
+    "countries": [
+      "США",
+      "Германия"
+    ],
+    "duration": 169,
+    "isSeries": false
+  },
+  {
+    "id": 5427621,
+    "title": "Батя 2. Дед",
+    "year": 2025,
+    "rating": 7.6,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10853012/a63fdd21-e770-4b28-af61-6897a7f16130/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/9NrMvX4nC5Mu0huvOFZRo4TpFwu.jpg",
+    "description": "Дед пытается научить маленького Макса премудростям жизни. Евгений Цыганов в продолжении хитовой комедии",
+    "genres": [
+      "комедия"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 88,
+    "isSeries": false
+  },
+  {
+    "id": 4419497,
+    "title": "Три богатыря и Конь на троне",
+    "year": 2021,
+    "rating": 7.5,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/84588772-8794-40dd-8897-04ea3482c355/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/3AP6umJzswdgPZMiAHmOvnQL8nt.jpg",
+    "description": "Князь меняется телами с Юлием, и конь берется править Русью. Сиквел о том, как полезно побывать в чужой шкуре",
+    "genres": [
+      "мультфильм",
+      "комедия",
+      "приключения",
+      "семейный"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 87,
+    "isSeries": false
+  },
+  {
+    "id": 462360,
+    "title": "Дэдпул",
+    "year": 2016,
+    "rating": 7.6,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1629390/f5961569-594e-476d-85ec-2ff29862c95c/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/en971MEXui9diirXlogOrPKmsEn.jpg",
+    "description": "Бывший наемник становится сверхчеловеком поневоле. Безбашенный блокбастер о самом дерзком супергерое Marvel",
+    "genres": [
+      "боевик",
+      "комедия"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 108,
+    "isSeries": false
+  },
+  {
+    "id": 835086,
+    "title": "Ford против Ferrari",
+    "year": 2019,
+    "rating": 8.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1898899/211e880d-c183-43aa-83b0-13c08109eaf7/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/2vq5GTJOahE03mNYZGxIynlHcWr.jpg",
+    "description": "Автоконструктор и строптивый гонщик против непобедимых конкурентов. Биографическая драма о любви к скорости",
+    "genres": [
+      "биография",
+      "спорт",
+      "драма",
+      "боевик"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 152,
+    "isSeries": false
+  },
+  {
+    "id": 5582621,
+    "title": "Беляковы в отпуске",
+    "year": 2024,
+    "rating": 7.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4486362/08dfe73d-179b-4506-84a6-968c6ff25554/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/tbXDFgvUMPSLPuWIuCsRCeLAGV2.jpg",
+    "description": "Неудачливая семья пускает пыль в глаза своим успешным знакомым. Турецкие приключения с Сергеем Светлаковым",
+    "genres": [
+      "комедия"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 93,
+    "isSeries": false
+  },
+  {
+    "id": 645118,
+    "title": "Головоломка",
+    "year": 2015,
+    "rating": 8.1,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/fe96f444-f022-4d14-a40f-7c1f35cc6ab8/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/jJKZaTBNenlFclQyjrnvzkRmvWE.jpg",
+    "description": "Пять человеческих эмоций должны договориться и помочь девочке справиться с собой. «Оскар» за лучший мультфильм",
+    "genres": [
+      "мультфильм",
+      "семейный",
+      "комедия",
+      "фэнтези"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 95,
+    "isSeries": false
+  },
+  {
+    "id": 1045583,
+    "title": "Конёк-Горбунок",
+    "year": 2021,
+    "rating": 7.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/9784475/cbd0f821-16e9-467a-8ece-c20d5fbefcaf/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/9Ttizfo7RkG7rbZZ71vIEkHIQde.jpg",
+    "description": "Простой парень Иван и волшебный конь служат царю-самодуру. Фильм-сказка с уникальной компьютерной графикой",
+    "genres": [
+      "фэнтези",
+      "комедия",
+      "приключения",
+      "семейный"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 111,
+    "isSeries": false
+  },
+  {
+    "id": 841700,
+    "title": "Марсианин",
+    "year": 2015,
+    "rating": 7.8,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1900788/6f631486-e947-487d-94d6-41c2b5a8f5a0/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/sq8oUjbBvKkqv9h0Ns5rQbbquhZ.jpg",
+    "description": "Инженер-биолог пытается выжить на Марсе, ожидая помощи с Земли. Научно-фантастический блокбастер Ридли Скотта",
+    "genres": [
+      "фантастика",
+      "приключения",
+      "драма",
+      "комедия",
+      "триллер"
+    ],
+    "countries": [
+      "США",
+      "Великобритания",
+      "Венгрия",
+      "Иордания"
+    ],
+    "duration": 144,
+    "isSeries": false
+  },
+  {
+    "id": 4958668,
+    "title": "Триггер. Фильм",
+    "year": 2023,
+    "rating": 6.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10671298/5859a0e6-b3e0-444a-949e-844079332f85/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/uyyzogcm5hob1sBRb4jQMkDLT0.jpg",
+    "description": "Стрелецкий сбегает из Москвы, но прошлое не желает его отпускать. Продолжение истории психолога-провокатора",
+    "genres": [
+      "драма"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 99,
+    "isSeries": false
+  },
+  {
+    "id": 1048334,
+    "title": "Джокер",
+    "year": 2019,
+    "rating": 8.0,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1946459/84934543-5991-4c93-97eb-beb6186a3ad7/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/hO7KbdvGOtDdeg0W4Y5nKEHeDDh.jpg",
+    "description": "Как неудачливый комик стал самым опасным человеком в Готэме. Бенефис Хоакина Феникса и «Оскар» за саундтрек",
+    "genres": [
+      "драма",
+      "криминал",
+      "триллер"
+    ],
+    "countries": [
+      "США",
+      "Канада",
+      "Австралия"
+    ],
+    "duration": 122,
+    "isSeries": false
+  },
+  {
+    "id": 4489198,
+    "title": "Три богатыря и Пуп Земли",
+    "year": 2023,
+    "rating": 7.0,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10809116/eaae6412-29ca-422c-93cf-d2774d054dcd/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/4gsmk6hWFhTiObQcE0XsRC1udF5.jpg",
+    "description": "Алеша открывает портал в мир динозавров и древних людей. Самая кассовая анимация в истории российского проката",
+    "genres": [
+      "мультфильм",
+      "приключения",
+      "семейный"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 85,
+    "isSeries": false
+  },
+  {
+    "id": 4536580,
+    "title": "Баба Яга спасает мир",
+    "year": 2023,
+    "rating": 7.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10812607/b6c9de8d-d861-4eec-ab0b-d12f8c2dd987/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/bsSSWpL6K497MokaUtRe5HuXGfS.jpg",
+    "description": "Лесная ведьма попадает в мегаполис, где встречает давнего врага — Кощея. Семейная сказка с любимыми героями",
+    "genres": [
+      "фэнтези",
+      "комедия",
+      "семейный",
+      "приключения"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 90,
+    "isSeries": false
+  },
+  {
+    "id": 1047883,
+    "title": "Однажды в… Голливуде",
+    "year": 2019,
+    "rating": 7.7,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1599028/70580cf5-3287-42d6-8a76-2c715e2f6172/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/aQLygZOIKai6aaiBAeeKpIWO5nc.jpg",
+    "description": "Можно ли переписать историю? Самый ностальгический фильм Тарантино — с Шэрон Тейт, Брюсом Ли и Чарли Мэнсоном",
+    "genres": [
+      "драма",
+      "комедия"
+    ],
+    "countries": [
+      "США",
+      "Великобритания",
+      "Китай"
+    ],
+    "duration": 161,
+    "isSeries": false
+  },
+  {
+    "id": 5450038,
+    "title": "Мастер",
+    "year": 2025,
+    "rating": 7.0,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10835644/d0492db0-4047-4797-ae16-a25a242e4324/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/fTrQsdMS2MUw00RnzH0r3JWHhts.jpg",
+    "description": "Бывший морпех ищет пропавшую дочь босса. Криминальный боевик с Джейсоном Стэйтемом",
+    "genres": [
+      "боевик",
+      "триллер",
+      "криминал"
+    ],
+    "countries": [
+      "Великобритания",
+      "США"
+    ],
+    "duration": 116,
+    "isSeries": false
+  },
+  {
+    "id": 775273,
+    "title": "Душа",
+    "year": 2020,
+    "rating": 8.4,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4774061/ce2e470c-861c-4995-b6b1-54e1dd4932d4/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/ijnaE8IU7XC5kA8uZbTxq6SmSnH.jpg",
+    "description": "Джазмен хочет сбежать с того света на концерт. Фантазия о призвании и важных мелочах жизни от автора «Вверх»",
+    "genres": [
+      "мультфильм",
+      "фэнтези",
+      "комедия",
+      "приключения",
+      "семейный",
+      "музыка"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 106,
+    "isSeries": false
+  },
+  {
+    "id": 804662,
+    "title": "Круэлла",
+    "year": 2021,
+    "rating": 7.6,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4303601/9bb0f260-1c5f-4698-91cc-de481bfd0f55/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/6MKr3KgOLmzOP6MSuZERO41Lpkt.jpg",
+    "description": "Бунтарка покоряет модный мир Лондона. Предыстория злодейки из «101 далматинца» с «Оскаром» за костюмы",
+    "genres": [
+      "комедия",
+      "криминал",
+      "драма"
+    ],
+    "countries": [
+      "США",
+      "Великобритания",
+      "Канада",
+      "Ирландия"
+    ],
+    "duration": 134,
+    "isSeries": false
+  },
+  {
+    "id": 1334852,
+    "title": "Сто лет тому вперёд",
+    "year": 2024,
+    "rating": 7.6,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10893610/e67acc36-dc80-4c2c-ba64-426f8a2ae073/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/g4g9LKtf9jUqqXMtKJduL26GcUc.jpg",
+    "description": "Судьба Вселенной — в руках обыкновенного школьника. Один из главных российских фильмов последних лет",
+    "genres": [
+      "фантастика",
+      "приключения",
+      "семейный"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 142,
+    "isSeries": false
+  },
+  {
+    "id": 1199100,
+    "title": "Главный герой",
+    "year": 2021,
+    "rating": 7.4,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/db4fbef1-466a-4dec-9b7a-d4f13eb45738/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/7py8kUCYaOdFn1TfVS87BDBySOz.jpg",
+    "description": "Банковский клерк обнаруживает, что он персонаж видеоигры. Фантастическая экшен-комедия с Райаном Рейнольдсом",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "комедия",
+      "мелодрама"
+    ],
+    "countries": [
+      "США",
+      "Канада"
+    ],
+    "duration": 115,
+    "isSeries": false
+  },
+  {
+    "id": 5394690,
+    "title": "Иван Васильевич меняет всё",
+    "year": 2023,
+    "rating": 6.6,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10671298/fa95b9f9-b4d5-44e5-8aa4-063e4914bfdb/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/yGtB1Z54jMuMoIGH0ByY8gCEcOS.jpg",
+    "description": "Шурик и Иван Грозный путешествуют по эпохам на барахлящей чудо-машине. Хулиганская комедия с камео суперзвезд",
+    "genres": [
+      "комедия",
+      "фантастика",
+      "приключения"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 106,
+    "isSeries": false
+  },
+  {
+    "id": 538225,
+    "title": "Первому игроку приготовиться",
+    "year": 2018,
+    "rating": 7.4,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1946459/5ae82f4b-fd6a-46b5-b5ba-897106eb1eae/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/5a7lMDn3nAj2ByO0X1fg6BhUphR.jpg",
+    "description": "Подросток охотится за пасхалками в виртуальной игре, захватившей мир. Фантастический экшен Стивена Спилберга",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "приключения"
+    ],
+    "countries": [
+      "США",
+      "Индия",
+      "Сингапур",
+      "Канада",
+      "Великобритания",
+      "Япония",
+      "Австралия"
+    ],
+    "duration": 140,
+    "isSeries": false
+  },
+  {
+    "id": 1322324,
+    "title": "Всё везде и сразу",
+    "year": 2021,
+    "rating": 7.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10671298/5a114ee7-3a48-4edb-8693-b1e769fb006e/300x450",
+    "backdrop": "https://avatars.mds.yandex.net/get-ott/2419418/2a000001811b4e3d10dcc67eab7a1b6bc11b/1344x756",
+    "description": "Судьба мультивселенной — в руках владелицы прачечной. Лучший фильм, режиссер и еще пять «Оскаров»",
+    "genres": [
+      "фантастика",
+      "комедия",
+      "боевик",
+      "приключения",
+      "драма"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 139,
+    "isSeries": false
+  },
+  {
+    "id": 88173,
+    "title": "Алита: Боевой ангел",
+    "year": 2019,
+    "rating": 7.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1900788/296962f5-fe56-4036-bdc1-2111c065ff69/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/jXDselREPq8TOVGM4dzBBUM7xVk.jpg",
+    "description": "Девушка-киборг пытается раскрыть тайну своего происхождения. Боевик от Джеймса Кэмерона и Роберта Родригеса",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "приключения"
+    ],
+    "countries": [
+      "США",
+      "Япония"
+    ],
+    "duration": 121,
+    "isSeries": false
+  },
+  {
+    "id": 4922959,
+    "title": "Догмен",
+    "year": 2023,
+    "rating": 7.7,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/9784475/740fe2d6-0813-470a-8ca0-38cda5ba2303/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/nvW0QfRJ7ga9TK8DKwBfAPA8ywP.jpg",
+    "description": "Парень в инвалидном кресле расправляется с врагами с помощью верных псов. Мощная криминальная драма Люка Бессона",
+    "genres": [
+      "драма",
+      "боевик"
+    ],
+    "countries": [
+      "Франция",
+      "США"
+    ],
+    "duration": 113,
+    "isSeries": false
+  },
+  {
+    "id": 689960,
+    "title": "Валериан и город тысячи планет",
+    "year": 2017,
+    "rating": 7.0,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/d931e148-ff72-4c38-9247-0fd660ae985d/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/5rYnygKCkmqWuMv1O5yAnzGF8gV.jpg",
+    "description": "Спецагенты раскрывают космический заговор. Сай-фай-боевик Люка Бессона по знаменитому французскому комиксу",
+    "genres": [
+      "фантастика",
+      "фэнтези",
+      "боевик",
+      "приключения"
+    ],
+    "countries": [
+      "Франция",
+      "Китай",
+      "Бельгия",
+      "Германия",
+      "ОАЭ",
+      "США",
+      "Канада",
+      "Катар"
+    ],
+    "duration": 136,
+    "isSeries": false
+  },
+  {
+    "id": 1047881,
+    "title": "Во всё тяжкое",
+    "year": 2018,
+    "rating": 7.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1773646/eb1d6716-372c-4fcf-b585-727b751f6485/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/mkBgQ5eiI3ICqpXOoXipvMJ69Rl.jpg",
+    "description": "Умирающий от рака профессор начинает жить на всю катушку. Комедийная драма с нарушающим правила Джонни Деппом",
+    "genres": [
+      "драма",
+      "комедия"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 90,
+    "isSeries": false
+  },
+  {
+    "id": 1387021,
+    "title": "Лига справедливости Зака Снайдера",
+    "year": 2021,
+    "rating": 7.8,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/6201401/3518c34c-092f-42bf-b948-87ebe0bd325a/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/13Nz8EchKRdCgJcKdEoJAnpiVn2.jpg",
+    "description": "Бэтмен собирает команду супергероев, чтобы спасти Землю. Режиссерская версия, которую так ждали фанаты",
+    "genres": [
+      "фантастика",
+      "боевик",
+      "фэнтези"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 242,
+    "isSeries": false
+  },
+  {
+    "id": 1355139,
+    "title": "Лулу и Бриггс",
+    "year": 2021,
+    "rating": 7.4,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1898899/c456643c-84fc-4b24-a288-668e3afa95fc/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/AjXoMiGS15AyR8laES8jke1Mgby.jpg",
+    "description": "Бывший солдат и пес едут на похороны друга. Трогательное роуд-муви, режиссерский дебют Ченнинга Татума",
+    "genres": [
+      "комедия",
+      "драма",
+      "приключения"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 101,
+    "isSeries": false
+  },
+  {
+    "id": 5047464,
+    "title": "Бременские музыканты",
+    "year": 2023,
+    "rating": 7.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10953618/f1780454-e9d3-4785-933c-a85a0302bf5f/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/9ehJShOUrSmr0BThHgRoEfKe1qv.jpg",
+    "description": "Трубадуру и Принцессе нужно спеться, чтобы обрести свободу. Приключенческий мюзикл по любимому мультфильму",
+    "genres": [
+      "приключения",
+      "семейный",
+      "фэнтези",
+      "комедия"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 116,
+    "isSeries": false
+  },
+  {
+    "id": 840817,
+    "title": "Движение вверх",
+    "year": 2017,
+    "rating": 7.6,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1898899/ef5cd4a4-e958-47a2-82a4-41176ea382a8/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/1GEfRXb4tfRAnLZH1ov11h9nBTS.jpg",
+    "description": "Советским баскетболистам предстоит матч с непобедимыми соперниками. Три секунды, вошедшие в историю спорта",
+    "genres": [
+      "спорт",
+      "драма"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 133,
+    "isSeries": false
+  },
+  {
+    "id": 5230101,
+    "title": "Огниво",
+    "year": 2024,
+    "rating": 7.7,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/10900341/a9e47413-c2f3-4a5b-a657-7a1da71a22b6/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/7oMprLUkMos59lS9glRrboZI9F4.jpg",
+    "description": "Находчивый Ваня должен спасти царевну от заклятия колдуна. Семейное фэнтези от авторов «По щучьему велению»",
+    "genres": [
+      "фэнтези",
+      "приключения",
+      "семейный"
+    ],
+    "countries": [
+      "Россия"
+    ],
+    "duration": 106,
+    "isSeries": false
+  },
+  {
+    "id": 819101,
+    "title": "Омерзительная восьмерка",
+    "year": 2015,
+    "rating": 8.0,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1600647/e5013408-8374-400b-a444-b9753e9da28d/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/7g1zO5t0bd27Iqn5ZUDJmksOGPJ.jpg",
+    "description": "Снег и несколько ублюдков на Диком Западе. Эффектная сатира на американские ценности от Квентина Тарантино",
+    "genres": [
+      "вестерн",
+      "криминал",
+      "триллер",
+      "драма",
+      "детектив"
+    ],
+    "countries": [
+      "США"
+    ],
+    "duration": 168,
+    "isSeries": false
+  },
+  {
+    "id": 848894,
+    "title": "Вторая жизнь Уве",
+    "year": 2015,
+    "rating": 8.3,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/4716873/0d39048c-01ec-4e1f-a376-7581387c77df/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/aWNknDl5kGZTgjqfeIKxdZaKGmm.jpg",
+    "description": "Сварливый вдовец-придира находит смысл жизни с появлением новых соседей. Добрый фильм по шведскому бестселлеру",
+    "genres": [
+      "драма",
+      "мелодрама",
+      "комедия"
+    ],
+    "countries": [
+      "Швеция",
+      "Дания",
+      "Норвегия"
+    ],
+    "duration": 116,
+    "isSeries": false
+  },
+  {
+    "id": 920265,
+    "title": "Человек-паук: Через вселенные",
+    "year": 2018,
+    "rating": 8.2,
+    "poster": "https://avatars.mds.yandex.net/get-kinopoisk-image/1900788/64417bd3-838b-4910-a9f4-c278c509d568/300x450",
+    "backdrop": "https://image.tmdb.org/t/p/original/8mnXR9rey5uQ08rZAvzojKWbDQS.jpg",
+    "description": "Пауки из разных измерений объединяются перед общей угрозой. Изобретательный кинокомикс с «Оскаром» за анимацию",
+    "genres": [
+      "мультфильм",
+      "фантастика",
+      "фэнтези",
+      "боевик",
+      "комедия",
+      "приключения",
+      "семейный"
+    ],
+    "countries": [
+      "Канада",
+      "США"
+    ],
+    "duration": 117,
+    "isSeries": false
+  }
+]
