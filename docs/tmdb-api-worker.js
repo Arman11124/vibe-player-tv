@@ -47,7 +47,12 @@ export default {
         // 0. LANDING PAGE & APK SERVING
         if (path === '/' || path === '/index.html') {
             return new Response(LANDING_PAGE, {
-                headers: { 'Content-Type': 'text/html;charset=UTF-8' }
+                headers: {
+                    'Content-Type': 'text/html;charset=UTF-8',
+                    'Cache-Control': 'private, max-age=0, no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
+                }
             });
         }
 
@@ -58,16 +63,33 @@ export default {
                 return new Response('Bucket Config Error', { status: 500 });
             }
 
-            const object = await env.VIBE_STATIC_BUCKET.get('VibePlayer_Latest.apk');
+            const range = request.headers.get('range');
+            const options = range ? { range } : {};
+
+            const object = await env.VIBE_STATIC_BUCKET.get('VibePlayer_Latest.apk', options);
+
             if (object === null) {
                 return new Response('APK not found in R2 bucket', { status: 404 });
             }
+
             const headers = new Headers();
             object.writeHttpMetadata(headers);
             headers.set('etag', object.httpEtag);
-            headers.set('Content-Disposition', 'attachment; filename="VibePlayer_v3.2.0.apk"');
+            headers.set('Content-Disposition', 'attachment; filename="VibePlayer_v3.2.1.apk"');
 
-            return new Response(object.body, { headers });
+            // Critical for resume/progress bars
+            if (range) {
+                headers.set('content-range', object.range.contentRange);
+            }
+            // Ensure length is set
+            if (object.size) {
+                headers.set('content-length', object.size);
+            }
+
+            return new Response(object.body, {
+                headers,
+                status: object.body ? (range ? 206 : 200) : 304
+            });
         }
 
         // 1. ROUTING
