@@ -89,8 +89,16 @@ export const fetchFromTmdb = async (endpoint: string, params: Record<string, any
       .filter(item => item.poster_path); // Filter out items with no poster
   } catch (error: any) {
     console.warn(`[TMDB] Error fetching ${endpoint}:`, error);
-    // DEBUG: Show error on TV screen
-    Alert.alert('API Error', `Endpoint: ${endpoint}\n${error.message}\nStatus: ${error.response?.status}`);
+    // DEBUG: Show detailed error on TV screen
+    let errorBody = 'No body';
+    if (error.response?.data) {
+      if (typeof error.response.data === 'string') {
+        errorBody = error.response.data.substring(0, 500); // Truncate HTML
+      } else {
+        errorBody = JSON.stringify(error.response.data);
+      }
+    }
+    Alert.alert('API Error (v3.1.3)', `Endpoint: ${endpoint}\nStatus: ${error.response?.status}\nBody: ${errorBody}`);
     return [];
   }
 };

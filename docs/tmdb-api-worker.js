@@ -23,12 +23,16 @@ export default {
         try {
             // Fetch from TMDB with Cloudflare Worker's global network
             // Worker runs in nearest PoP, but subrequest goes through CF's network
+            // STRICT HEADER SANITIZATION
+            // We ignore all headers from the client (TV) to prevent fingerprinting.
             const response = await fetch(targetUrl, {
-                method: request.method,
+                method: 'GET', // Force GET
                 headers: {
                     'Accept': 'application/json',
                     'Accept-Language': 'ru-RU,ru;q=0.9,en;q=0.8',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Referer': 'https://www.themoviedb.org/',
+                    'Origin': 'https://www.themoviedb.org'
                 },
                 cf: {
                     // Disable cache to debug 403 errors and prevent "poisoned" cache
