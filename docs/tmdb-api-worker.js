@@ -1,221 +1,75 @@
-// TMDB Smart Proxy (Worker + R2 + Landing Page)
-// Deploy to: api.xn--b1a5a.fun
-
-const TMDB_API_HOST = 'api.themoviedb.org';
-const TMDB_IMG_HOST = 'image.tmdb.org';
-const CACHE_TTL_SECONDS = 2592000; // 30 Days
-
-const LANDING_PAGE = `<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VibePlayer - Медиа-Поисковик для Android TV</title>
-    <style>
-        :root { --primary: #3b82f6; --dark: #0f172a; --light: #f8fafc; --text-dim: #94a3b8; }
-        body { margin: 0; background-color: var(--dark); color: var(--light); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; }
-        .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); text-align: center; padding: 20px; box-sizing: border-box; }
-        .badge { background: rgba(59, 130, 246, 0.1); color: var(--primary); padding: 6px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: inline-block; border: 1px solid rgba(59, 130, 246, 0.2); }
-        h1 { font-size: 3.5rem; margin: 0 0 1.5rem; letter-spacing: -0.05em; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p { font-size: 1.25rem; color: var(--text-dim); max-width: 600px; margin: 0 auto 3rem; font-weight: 300; }
-        .btn { display: inline-flex; align-items: center; justify-content: center; background-color: var(--primary); color: white; padding: 16px 48px; font-size: 1.1rem; font-weight: 600; text-decoration: none; border-radius: 12px; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3); border: 1px solid rgba(255,255,255,0.1); }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4); background-color: #2563eb; }
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; width: 100%; max-width: 1200px; margin-top: 5rem; text-align: left; }
-        .feature-card { background: rgba(255, 255, 255, 0.03); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s ease; }
-        .feature-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.05); }
-        .feature-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
-        h3 { font-size: 1.2rem; margin: 0 0 0.5rem; color: var(--light); }
-        .feature-desc { font-size: 0.95rem; margin: 0; color: var(--text-dim); }
-        .meta { margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-dim); opacity: 0.6; }
-        @media (max-width: 768px) { h1 { font-size: 2.5rem; } .features { grid-template-columns: 1fr; margin-top: 3rem; } }
-    </style>
-</head>
-<body>
-    <div class="hero">
-        <div class="content">
-            <span class="badge">VibePlayer 3.2.2</span>
-            <h1>Умный Медиа-Браузер</h1>
-            <p>Технологичный инструмент для поиска, организации и воспроизведения контента. Используйте мощь децентрализованных сетей на вашем Android TV.</p>
-            
-            <a href="https://api.xn--b1a5a.fun/latest.apk?v=3.2.2" class="btn">
-                Скачать APK
-                <span style="margin-left: 10px; opacity: 0.7; font-weight: 400;">(v3.2.2)</span>
-            </a>
-            
-            <div class="meta">Работает на Android TV • Обновлено: 3.2.2</div>
-
-            <div class="features">
-                <div class="feature-card">
-                    <span class="feature-icon">🔍</span>
-                    <h3>Поисковый Агрегатор</h3>
-                    <p class="feature-desc">Мгновенный поиск информации о медиа-контенте по множеству открытых источников и баз данных.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">⚡</span>
-                    <h3>Высокая Скорость</h3>
-                    <p class="feature-desc">Оптимизированный движок воспроизведения с поддержкой аппаратного ускорения и 4K Ultra HD.</p>
-                </div>
-                <div class="feature-card">
-                    <span class="feature-icon">🛡️</span>
-                    <h3>Приватность</h3>
-                    <p class="feature-desc">Мы не храним вашу историю. Приложение работает локально, обеспечивая полную анонимность.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>`;
-
 export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
-        const path = url.pathname;
 
-        // 0. LANDING PAGE & APK SERVING
-        if (path === '/' || path === '/index.html') {
-            return new Response(LANDING_PAGE, {
-                headers: {
-                    'Content-Type': 'text/html;charset=UTF-8',
-                    'Cache-Control': 'private, max-age=0, no-cache, no-store, must-revalidate',
-                    'Pragma': 'no-cache',
-                    'Expires': '0'
-                }
-            });
-        }
+        // БАЗОВЫЙ URL TMDB
+        const TMDB_API = "https://api.themoviedb.org";
+        const TMDB_IMAGE = "https://images.tmdb.org";
 
-        if (path === '/latest.apk') {
-            // Serve APK from vibe-static (Public) bucket
-            // Since it's public, we could redirect, but serving via Worker keeps domain clean
-            if (!env.VIBE_STATIC_BUCKET) {
-                return new Response('Bucket Config Error', { status: 500 });
-            }
-
-            const range = request.headers.get('range');
-            const options = range ? { range } : {};
-
-            const object = await env.VIBE_STATIC_BUCKET.get('VibePlayer_Latest.apk', options);
-
+        // 0. СКАЧИВАНИЕ APK (v3.3.5)
+        if (url.pathname === '/OTT-Browser-v3.3.5.apk') {
+            const object = await env.VIBE_STATIC_BUCKET.get('OTT-Browser-v3.3.5.apk');
             if (object === null) {
-                return new Response('APK not found in R2 bucket', { status: 404 });
+                return new Response('APK not found', { status: 404 });
             }
-
             const headers = new Headers();
             object.writeHttpMetadata(headers);
             headers.set('etag', object.httpEtag);
-            headers.set('Content-Disposition', 'attachment; filename="VibePlayer_v3.2.2.apk"');
-            headers.set('Content-Type', 'application/vnd.android.package-archive');
-            headers.set('Cache-Control', 'private, max-age=0, no-cache, no-store, must-revalidate');
-
-            // Critical for resume/progress bars
-            if (range) {
-                headers.set('content-range', object.range.contentRange);
-            }
-            // Ensure length is set
-            if (object.size) {
-                headers.set('content-length', object.size);
-            }
-
-            return new Response(object.body, {
-                headers,
-                status: object.body ? (range ? 206 : 200) : 304
-            });
+            headers.set('Content-Disposition', 'attachment; filename="OTT-Browser-v3.3.5.apk"');
+            return new Response(object.body, { headers });
         }
 
-        // 1. ROUTING
-        // /t/p/* -> Image CDN
-        // /3/*   -> API
-        let targetHost = TMDB_API_HOST;
-        if (path.startsWith('/t/p/')) {
-            targetHost = TMDB_IMG_HOST;
-        }
+        // 1. ОБРАБОТКА КАРТИНОК (Самое важное сейчас!)
+        // Если путь начинается с /t/p/ - это картинка TMDB
+        if (url.pathname.startsWith('/t/p/')) {
+            const newUrl = TMDB_IMAGE + url.pathname;
 
-        const targetUrl = `https://${targetHost}${path}${url.search}`;
-
-        // 2. R2 CACHING (Only for API GET requests)
-        // We don't cache images here (Cloudflare CDN handles that better), strictly JSON metadata
-        const isCacheable = request.method === 'GET' && targetHost === TMDB_API_HOST && env.TMDB_CACHE_BUCKET;
-        const cacheKey = `tmdb_v1${path}${url.search}`; // Simple cache key
-
-        if (isCacheable) {
+            // "Polite Browser" (Method 5)
+            // Используем рабочий домен images.tmdb.org + Valid Referer
             try {
-                const cached = await env.TMDB_CACHE_BUCKET.get(cacheKey);
-                if (cached) {
-                    // HIT!
-                    const headers = new Headers(cached.httpMetadata);
-                    headers.set('X-Proxy-Cache', 'HIT');
-                    headers.set('Access-Control-Allow-Origin', '*'); // Ensure CORS on cached response
-                    return new Response(cached.body, {
-                        headers,
-                        status: 200 // Assuming cached is always 200
+                const response = await fetch(newUrl, {
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Referer': 'https://www.themoviedb.org/', // Pretend we are the main site
+                        'Host': 'images.tmdb.org', // Be explicit
+                        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+                    }
+                });
+
+                if (!response.ok) {
+                    // Detailed Error for User Debugging
+                    return new Response(`TMDB Proxy Error: ${response.status} ${response.statusText} from ${newUrl}`, {
+                        status: response.status,
+                        headers: { 'Access-Control-Allow-Origin': '*' }
                     });
                 }
+
+                return new Response(response.body, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: {
+                        ...Object.fromEntries(response.headers),
+                        'Access-Control-Allow-Origin': '*',
+                        'Cache-Control': 'public, max-age=31536000'
+                    }
+                });
             } catch (e) {
-                console.warn('[R2] Cache Read Error', e);
+                return new Response(`Proxy Exception (Method 5): ${e.message}`, { status: 502, headers: { 'Access-Control-Allow-Origin': '*' } });
             }
         }
 
-        // 3. FETCH & SPOOF
-        try {
-            const newRequest = new Request(targetUrl, {
-                method: request.method,
-                headers: request.headers,
-                // body: request.body // GET usually has no body
-            });
-
-            // CRITICAL: Header Spoofing to bypass Geo-Block
-            newRequest.headers.set('Host', targetHost);
-            newRequest.headers.set('Referer', `https://${targetHost}`);
-
-            // Clean up headers clearly identifying us
-            newRequest.headers.delete('Cf-Worker');
-            newRequest.headers.delete('X-Forwarded-Proto');
-
-            const response = await fetch(newRequest, {
-                cf: {
-                    cacheTtl: 0, // Don't rely on standard CF Cache for API, we use R2
-                    ssl: { strict: true } // Force strict SSL
-                }
-            });
-
-            // 4. PROCESS RESPONSE
-            const responseBody = await response.arrayBuffer(); // Read as buffer for R2
-
-            // IF Valid API Response -> Save to R2
-            if (isCacheable && response.ok) {
-                ctx.waitUntil(
-                    env.TMDB_CACHE_BUCKET.put(cacheKey, responseBody, {
-                        httpMetadata: {
-                            contentType: response.headers.get('content-type') || 'application/json',
-                        },
-                        customMetadata: {
-                            timestamp: Date.now().toString()
-                        }
-                        // R2 doesn't support expiration natively in put() in all bindings, 
-                        // but lifecycle rules on bucket handle cleanup.
-                    })
-                );
+        // 2. ОБРАБОТКА API (JSON данных - описания, поиск)
+        // Весь остальной трафик идет на API TMDB
+        const newUrl = TMDB_API + url.pathname + url.search;
+        const response = await fetch(newUrl, {
+            method: request.method,
+            headers: {
+                ...Object.fromEntries(request.headers),
+                'Host': 'api.themoviedb.org' // Критично для обхода блокировки
             }
+        });
 
-            // 5. RETURN TO CLIENT
-            const responseHeaders = new Headers(response.headers);
-            responseHeaders.set('Access-Control-Allow-Origin', '*');
-            responseHeaders.set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-            responseHeaders.set('X-Proxy-Cache', 'MISS');
-            responseHeaders.set('X-Proxy-Worker', 'v2-SmartPlus');
-
-            return new Response(responseBody, {
-                status: response.status,
-                headers: responseHeaders
-            });
-
-        } catch (e) {
-            return new Response(JSON.stringify({ error: e.message, hint: 'Proxy Fetch Failed' }), {
-                status: 502,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                }
-            });
-        }
+        return response;
     }
 };

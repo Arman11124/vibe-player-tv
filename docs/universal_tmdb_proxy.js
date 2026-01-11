@@ -1,45 +1,75 @@
 export default {
-    async fetch(request) {
+    async fetch(request, env, ctx) {
         const url = new URL(request.url);
-        const path = url.pathname;
 
-        // ОПРЕДЕЛЯЕМ ЦЕЛЬ (Target)
-        let targetDomain = '';
+        // БАЗОВЫЙ URL TMDB
+        const TMDB_API = "https://api.themoviedb.org";
+        const TMDB_IMAGE = "https://images.tmdb.org";
 
-        // Если запрос начинается с /t/p/ - это картинка
-        if (path.startsWith('/t/p/')) {
-            targetDomain = 'image.tmdb.org';
+        // 0. СКАЧИВАНИЕ APK (v3.3.5)
+        if (url.pathname === '/OTT-Browser-v3.3.5.apk') {
+            const object = await env.VIBE_STATIC_BUCKET.get('OTT-Browser-v3.3.5.apk');
+            if (object === null) {
+                return new Response('APK not found', { status: 404 });
+            }
+            const headers = new Headers();
+            object.writeHttpMetadata(headers);
+            headers.set('etag', object.httpEtag);
+            headers.set('Content-Disposition', 'attachment; filename="OTT-Browser-v3.3.5.apk"');
+            return new Response(object.body, { headers });
         }
-        // В остальных случаях считаем, что это API запрос
-        else {
-            targetDomain = 'api.themoviedb.org';
+
+        // 1. ОБРАБОТКА КАРТИНОК (Самое важное сейчас!)
+        // Если путь начинается с /t/p/ - это картинка TMDB
+        if (url.pathname.startsWith('/t/p/')) {
+            const newUrl = TMDB_IMAGE + url.pathname;
+
+            // "Polite Browser" (Method 5)
+            // Используем рабочий домен images.tmdb.org + Valid Referer
+            try {
+                const response = await fetch(newUrl, {
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Referer': 'https://www.themoviedb.org/', // Pretend we are the main site
+                        'Host': 'images.tmdb.org', // Be explicit
+                        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
+                    }
+                });
+
+                if (!response.ok) {
+                    // Detailed Error for User Debugging
+                    return new Response(`TMDB Proxy Error: ${response.status} ${response.statusText} from ${newUrl}`, {
+                        status: response.status,
+                        headers: { 'Access-Control-Allow-Origin': '*' }
+                    });
+                }
+
+                return new Response(response.body, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: {
+                        ...Object.fromEntries(response.headers),
+                        'Access-Control-Allow-Origin': '*',
+                        'Cache-Control': 'public, max-age=31536000'
+                    }
+                });
+            } catch (e) {
+                return new Response(`Proxy Exception (Method 5): ${e.message}`, { status: 502, headers: { 'Access-Control-Allow-Origin': '*' } });
+            }
         }
 
-        // Формируем новый URL
-        const newUrl = new URL(request.url);
-        newUrl.hostname = targetDomain;
-        newUrl.protocol = 'https:';
-
-        // Создаем новый запрос с правильными заголовками
-        // ВАЖНО: Мы должны подменить Host, иначе TMDB отклонит запрос
-        const newRequest = new Request(newUrl, {
+        // 2. ОБРАБОТКА API (JSON данных - описания, поиск)
+        // Весь остальной трафик идет на API TMDB
+        const newUrl = TMDB_API + url.pathname + url.search;
+        const response = await fetch(newUrl, {
             method: request.method,
-            headers: request.headers,
-            body: request.body
+            headers: {
+                ...Object.fromEntries(request.headers),
+                'Host': 'api.themoviedb.org' // Критично для обхода блокировки
+            }
         });
 
-        // Устанавливаем правильный Host header и Referer
-        newRequest.headers.set('Host', targetDomain);
-        newRequest.headers.set('Referer', `https://${targetDomain}`);
-
-        // Выполняем запрос
-        const response = await fetch(newRequest);
-
-        // Добавляем CORS заголовки, чтобы ваше Android/Web приложение могло читать ответ
-        const newResponse = new Response(response.body, response);
-        newResponse.headers.set('Access-Control-Allow-Origin', '*');
-        newResponse.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-
-        return newResponse;
+        return response;
     }
 };
