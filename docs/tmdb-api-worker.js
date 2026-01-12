@@ -57,8 +57,8 @@ export default {
         // 2. TMDB IMAGE CHECK
         // ---------------------------------------------------------
         if (url.pathname.startsWith('/t/p/')) {
-            // wsrv.nl redirect
-            const tmdbImageUrl = "https://images.tmdb.org" + url.pathname;
+            // wsrv.nl redirect for images
+            const tmdbImageUrl = "https://image.tmdb.org" + url.pathname;
             const wsrvUrl = `https://wsrv.nl/?url=${encodeURIComponent(tmdbImageUrl)}`;
             const redirectHeaders = new Headers(corsHeaders);
             redirectHeaders.set('Location', wsrvUrl);
@@ -66,22 +66,33 @@ export default {
         }
 
         // ---------------------------------------------------------
-        // 3. TMDB API PROXY (V14: 302 Redirect / Original Domain)
+        // 3. TMDB API PROXY (V15: Direct Fetch - No Redirect)
         // ---------------------------------------------------------
+        try {
+            const tmdbUrl = "https://api.themoviedb.org" + url.pathname + url.search;
 
-        // Re-targeting api.themoviedb.org based on user feedback ("worked without VPN")
-        const newUrl = "https://api.themoviedb.org" + url.pathname + url.search;
+            const tmdbResponse = await fetch(tmdbUrl, {
+                method: request.method,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                }
+            });
 
-        const redirectHeaders = new Headers(corsHeaders);
-        redirectHeaders.set('Location', newUrl);
-        // Add Connection: close to force new connection logic on client
-        redirectHeaders.set('Connection', 'close');
+            const responseHeaders = new Headers(corsHeaders);
+            responseHeaders.set('Content-Type', 'application/json');
 
-        // Using 302 Found - standard temporary redirect, very compatible
-        return new Response(null, {
-            status: 302,
-            statusText: "Found",
-            headers: redirectHeaders
-        });
+            const body = await tmdbResponse.text();
+            return new Response(body, {
+                status: tmdbResponse.status,
+                headers: responseHeaders
+            });
+        } catch (e) {
+            return new Response(JSON.stringify({ error: 'Proxy error', message: e.message }), {
+                status: 500,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+            });
+        }
     }
 };
