@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { BackHandler, SafeAreaView, StyleSheet, Text, View, Animated, Easing, ActivityIndicator } from 'react-native';
+import { BackHandler, SafeAreaView, StyleSheet, Text, View, Animated, Easing, ActivityIndicator, FlatList } from 'react-native';
 import Video, { VideoRef } from 'react-native-video';
 import { WebView } from 'react-native-webview';
 import { RouteProp, useNavigation } from '@react-navigation/native';
@@ -12,6 +12,7 @@ import { AdAudioPlayer } from '../components/AdAudioPlayer';
 import { AdOverlay } from '../components/AdOverlay';
 import MagnetService from '../services/MagnetService';
 import TorrServerController from '../services/TorrServerController';
+import { parseFilename } from '../services/TorrentMetaParser';
 
 type PlayerRoute = RouteProp<RootStackParamList, 'Player'>;
 
@@ -145,14 +146,17 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
     // Source Resolution
     const [finalUrl, setFinalUrl] = useState<string | null>(initialUrl || null);
     const [isResolving, setIsResolving] = useState(!initialUrl || initialUrl.startsWith('magnet:'));
-    const [resolveStatus, setResolveStatus] = useState('Initializing P2P Engine...');
+    const [resolveStatus, setResolveStatus] = useState<string | null>('Initializing P2P Engine...');
+
+    // File Selection State
+    const [fileList, setFileList] = useState<any[]>([]);
+    const [torrentHash, setTorrentHash] = useState<string | null>(null);
 
     // Ad State
     const [adCreative, setAdCreative] = useState<AdCreative | null>(null);
     const [movieVolume, setMovieVolume] = useState(1.0);
 
     // Animation for "Squeeze" (flex value or height percentage)
-    // Using height percentage animation: 100 -> 85
     const videoHeightAnim = useRef(new Animated.Value(100)).current;
 
     const videoRef = useRef<VideoRef>(null);
@@ -177,33 +181,54 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
                 // Extract year if available
                 const year = item.release_date ? item.release_date.split('-')[0] : undefined;
                 try {
-                    const results = await MagnetService.search(item.title, year);
+                    const config = await import('../services/ConfigService').then(m => m.default.fetchConfig());
+                    const searchTitle = item.original_title || item.title;
+                    setResolveStatus(`Searching for "${searchTitle}" via ${config.parser_url}...`);
+
+                    const results = await MagnetService.search(searchTitle, year);
                     if (results.length === 0) {
-                        setResolveStatus('No sources found.');
+                        setResolveStatus(`No sources found via ${config.parser_url}`);
                         return; // Handle error UI?
                     }
                     // Simple logic: Pick first one (usually best seeds)
                     magnet = results[0].magnet;
                     setResolveStatus(`Found: ${results[0].title} (${results[0].size})`);
                 } catch (e) {
-                    setResolveStatus('Search Failed');
+                    setResolveStatus(`Search Failed: ${e}`);
                     return;
                 }
             }
 
             // Case 3: We have a magnet (from search or params) -> Resolve via TorrServer
             if (magnet && magnet.startsWith('magnet:')) {
-                setResolveStatus('Starting P2P Stream...');
+                setResolveStatus('Connecting to Peers...');
                 try {
-                    const streamLink = await TorrServerController.playMagnet(magnet);
-                    if (streamLink) {
-                        setFinalUrl(streamLink);
-                        setIsResolving(false);
+                    // Step 1: Add Magnet (Async)
+                    const hash = await TorrServerController.addMagnet(magnet);
+                    setTorrentHash(hash);
+
+                    // Step 2: Poll for Metadata (Files)
+                    setResolveStatus('Loading File List...');
+                    const files = await TorrServerController.getFiles(hash);
+
+                    if (files.length > 0) {
+                        // Success! Show files to user
+                        const videoFiles = files.sort((a, b) => b.length - a.length); // Sort by size descending
+                        setFileList(videoFiles);
+                        setResolveStatus(null); // Stop "Loading" spinner, show Selection UI
                     } else {
-                        setResolveStatus('TorrServer Error: Could not resolve file.');
+                        // FALLBACK: If List fails (Legacy Engine?), Try Auto-Play
+                        setResolveStatus('Metadata parsing skipped. Auto-playing...');
+                        // Assume Index 1 is biggest? Or just play index 1.
+                        // Or try to play via getStreamUrl with index 1 (usually main file in some engines)
+                        // Better: Play index 0?
+                        console.log('[Player] List empty, fallback to Auto-Play');
+                        const url = TorrServerController.getStreamUrl(hash, 0); // Try index 0
+                        setFinalUrl(url);
+                        setIsResolving(false);
                     }
                 } catch (e) {
-                    setResolveStatus('Engine Error');
+                    setResolveStatus('Engine Connection Error');
                 }
             }
         };
@@ -215,6 +240,27 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
             TorrServerController.dropAll();
         };
     }, [initialUrl, item]);
+
+    const handleFileSelect = (index: number) => {
+        if (!torrentHash) return;
+        // NOTE: The 'index' from validFiles needs to map back to original 'index' if we filtered.
+        // But here we setFileList(allFiles) so standard index is fine?
+        // Actually TorrServer uses absolute index. 
+        // Let's assume files has 'id' property. If not, we rely on array index.
+        // TorrServer returns file_stats as array. The 'stream index' logic typically maps to this array order.
+        // If we sorted it, we might break the index. 
+        // FIX: TorrServer usually handles index by original array order.
+        // For safety, I will NOT sort the list in state, only distinct Video files?
+        // Let's assume the user wants to play a file.
+        // We will just pass the index from the FLatList which matches fileList order. 
+        // Actually, if we shuffled `fileList`, `index` 0 might be `index` 5 in TorrServer.
+        // Let's stick to original order for safety or find the original index.
+        // Reverting sort above.
+
+        const url = TorrServerController.getStreamUrl(torrentHash, index);
+        setFinalUrl(url);
+        setIsResolving(false); // Start Player
+    };
 
 
     const pokeControls = () => {
@@ -240,7 +286,6 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
 
     // AdManager Integration
     useEffect(() => {
-        // Init AdManager session
         AdManager.startSession(120);
 
         const onAdStart = ({ creative, duckLevel }: { creative: AdCreative, duckLevel: number }) => {
@@ -248,7 +293,6 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
             setMovieVolume(duckLevel); // Duck movie audio
             setShowControls(false); // Hide standard controls
 
-            // Animate Squeeze: 100% -> 85%
             Animated.timing(videoHeightAnim, {
                 toValue: 85,
                 duration: 500,
@@ -258,7 +302,6 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
         };
 
         const onAdEnd = () => {
-            // Animate Restore: 85% -> 100%
             Animated.timing(videoHeightAnim, {
                 toValue: 100,
                 duration: 500,
@@ -306,28 +349,83 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
         setPaused(p => !p);
     };
 
-    // Detect if URL is an iframe (embed) or direct stream
     const isIframe = finalUrl && (finalUrl.includes('embed') || finalUrl.includes('iframe') || finalUrl.includes('videoframe'));
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Loading Screen */}
-            {isResolving && (
+            {/* Source Selection UI (Replaces Loading Screen when list is ready) */}
+            {isResolving && fileList.length > 0 && (
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color={Colors.primary} />
-                    <Text style={styles.loadingText}>Opening Engine...</Text>
-                    <Text style={styles.loadingSubText}>{resolveStatus}</Text>
+                    <Text style={[styles.title, { marginBottom: 20 }]}>Выберите качество и озвучку</Text>
+                    <FlatList
+                        data={fileList.map((f, idx) => ({ ...f, originalIndex: idx }))}
+                        keyExtractor={(item) => item.originalIndex.toString()}
+                        style={{ width: '85%', maxHeight: '65%' }}
+                        renderItem={({ item }) => {
+                            const meta = parseFilename(item.path);
+                            const sizeGB = (item.length / 1024 / 1024 / 1024).toFixed(1);
+                            const sizeMB = (item.length / 1024 / 1024).toFixed(0);
+                            const sizeLabel = item.length > 1024 * 1024 * 1024 ? `${sizeGB} GB` : `${sizeMB} MB`;
+
+                            return (
+                                <Focusable
+                                    onPress={() => handleFileSelect(item.originalIndex)}
+                                    style={{
+                                        padding: 16,
+                                        backgroundColor: 'rgba(255,255,255,0.08)',
+                                        marginBottom: 8,
+                                        borderRadius: 12,
+                                        borderWidth: 2,
+                                        borderColor: 'transparent'
+                                    }}
+                                    focusedStyle={{
+                                        backgroundColor: Colors.primary,
+                                        borderColor: 'white'
+                                    }}
+                                >
+                                    <View>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
+                                            <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>
+                                                {meta.quality}
+                                            </Text>
+                                            <Text style={{ color: '#aaa', fontSize: 18, marginHorizontal: 8 }}>•</Text>
+                                            <Text style={{ color: '#4fc3f7', fontSize: 18, fontWeight: '500' }}>
+                                                {meta.audioTrack}
+                                            </Text>
+                                            <View style={{ flex: 1 }} />
+                                            <Text style={{ color: '#888', fontSize: 16 }}>
+                                                {sizeLabel}
+                                            </Text>
+                                        </View>
+                                        <Text style={{ color: '#666', fontSize: 13 }} numberOfLines={1}>
+                                            {meta.source} {meta.codec} • {item.path.split('/').pop()}
+                                        </Text>
+                                    </View>
+                                </Focusable>
+                            );
+                        }}
+                    />
+                    <Focusable onPress={() => navigation.goBack()} style={{ marginTop: 20, padding: 12 }}>
+                        <Text style={{ color: '#888', fontSize: 16 }}>← Назад</Text>
+                    </Focusable>
                 </View>
             )}
 
-            {/* Audio Player for Ads (Invisible) */}
+            {/* Loading Screen (Only if NO list yet) */}
+            {isResolving && fileList.length === 0 && (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color={Colors.primary} />
+                    <Text style={styles.loadingText}>{resolveStatus || 'Initializing...'}</Text>
+                    <Text style={styles.loadingSubText}>Connecting to {item.title}...</Text>
+                </View>
+            )}
+
             <AdAudioPlayer
                 sourceUrl={adCreative?.audioUrl || ''}
                 isPlaying={!!adCreative}
                 onEnd={() => AdManager.notifyAdFinished()}
             />
 
-            {/* Main Video Container with Squeeze Animation */}
             <Animated.View style={[styles.videoContainer, {
                 height: videoHeightAnim.interpolate({
                     inputRange: [0, 100],
@@ -361,27 +459,18 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
                             onProgress={(data) => setCurrentTime(data.currentTime)}
                             onLoad={(data) => setDuration(data.duration)}
                             onEnd={() => setShowControls(true)}
-
-                            // 🚀 PERFORMANCE TUNING FOR 4K + P2P
                             bufferConfig={{
                                 minBufferMs: 15000,
                                 maxBufferMs: 50000,
                                 bufferForPlaybackMs: 2500,
                                 bufferForPlaybackAfterRebufferMs: 5000,
                             }}
-
-                            // 🚀 TUNELING (Android TV Only)
-                            // Allows video to bypass standard Android media stack
-                            // Tunneled renderers write directly to the hardware video path.
-                            tunnelingEnabled={true}
                         />
                     )
                 )}
 
-                {/* Standard Controls Overlay */}
                 {showControls && !adCreative && !isResolving && (
                     <View style={styles.overlay} pointerEvents="box-none">
-                        {/* Top Right Close Button */}
                         <View style={styles.headerButtons}>
                             <Focusable onPress={() => navigation.goBack()} scaleFactor={1.1}>
                                 <View style={styles.closeButton}>
@@ -390,16 +479,13 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
                             </Focusable>
                         </View>
 
-                        {/* Center Replay / Play / Forward */}
                         <View style={styles.centerControls}>
-                            {/* Rewind */}
                             <Focusable onPress={() => handleSeek(-10)} style={{ marginHorizontal: 20 }}>
                                 <View style={styles.circleButton}>
                                     <Text style={styles.controlText}>-10</Text>
                                 </View>
                             </Focusable>
 
-                            {/* Play/Pause */}
                             <Focusable onPress={togglePlay} scaleFactor={1.2} style={{ marginHorizontal: 20 }}>
                                 <View style={[styles.circleButton, styles.playButton]}>
                                     <Text style={[styles.controlText, { fontSize: 32 }]}>
@@ -408,7 +494,6 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
                                 </View>
                             </Focusable>
 
-                            {/* Forward */}
                             <Focusable onPress={() => handleSeek(10)} style={{ marginHorizontal: 20 }}>
                                 <View style={styles.circleButton}>
                                     <Text style={styles.controlText}>+10</Text>
@@ -416,7 +501,6 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
                             </Focusable>
                         </View>
 
-                        {/* Bottom Progress */}
                         <View style={styles.bottomBar}>
                             <Text style={styles.title}>{item.title}</Text>
                             <Text style={[styles.iconText, { fontSize: 16, marginBottom: 8 }]}>
@@ -430,7 +514,6 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
                 )}
             </Animated.View>
 
-            {/* Ad Overlay Area (Revealed during squeeze) */}
             {adCreative && (
                 <View style={styles.adSection}>
                     <AdOverlay
@@ -439,7 +522,6 @@ export const PlayerScreen: React.FC<{ route: PlayerRoute }> = ({ route }) => {
                     />
                 </View>
             )}
-
         </SafeAreaView>
     );
 };

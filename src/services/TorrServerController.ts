@@ -19,11 +19,11 @@ class TorrServerController {
     private isRunning = false;
     private checkInterval: NodeJS.Timeout | null = null;
 
-    // Config: 200MB Cache for RAM (Don't kill the TV)
-    // 95% Read Ahead to prioritize playback
+    // Config: 32MB Cache to prevent OOM on legacy devices
+    // 20% Read Ahead
     private readonly DEFAULT_SETTINGS = {
-        cache_size: 200 * 1024 * 1024,
-        reader_read_ahead: 95,
+        cache_size: 32 * 1024 * 1024,
+        reader_read_ahead: 20,
         use_disk: false
     };
 
@@ -73,46 +73,93 @@ class TorrServerController {
 
     private async applySettings() {
         try {
-            await axios.post(`${TORR_API}/settings`, this.DEFAULT_SETTINGS);
-            console.log('[TorrCtrl] Settings applied (RAM Cache)');
+            // Adaptive cache based on device RAM
+            let cacheSize = 32 * 1024 * 1024; // Default: 32MB (safe fallback)
+
+            try {
+                // Try to get device memory if react-native-device-info is available
+                const DeviceInfo = require('react-native-device-info');
+                const totalMemoryBytes = await DeviceInfo.getTotalMemory();
+                const totalMemoryMB = totalMemoryBytes / (1024 * 1024);
+
+                if (totalMemoryMB < 1500) {
+                    // Weak devices (1GB RAM): conservative cache
+                    cacheSize = 64 * 1024 * 1024; // 64MB
+                    console.log(`[TorrCtrl] Low RAM device (${Math.round(totalMemoryMB)}MB), using 64MB cache`);
+                } else {
+                    // Normal devices (2GB+): aggressive cache
+                    cacheSize = 200 * 1024 * 1024; // 200MB
+                    console.log(`[TorrCtrl] Normal RAM device (${Math.round(totalMemoryMB)}MB), using 200MB cache`);
+                }
+            } catch (deviceInfoError) {
+                // react-native-device-info not installed, use safe default
+                console.log('[TorrCtrl] DeviceInfo not available, using 32MB default cache');
+            }
+
+            await axios.post(`${TORR_API}/settings`, {
+                cache_size: cacheSize,
+                reader_read_ahead: 20,
+                use_disk: false
+            });
+            console.log(`[TorrCtrl] Settings applied (${cacheSize / 1024 / 1024}MB RAM Cache)`);
         } catch (e) {
             console.warn('[TorrCtrl] Failed to apply settings', e);
         }
     }
 
     /**
-     * Adds a magnet links and returns the playback URL for the largest file
+     * Step 1: Add Magnet to Engine
+     */
+    public async addMagnet(magnetLink: string): Promise<string> {
+        if (!this.isRunning) await this.init();
+        const addRes = await axios.post(`${TORR_API}/torrents/add`, { link: magnetLink });
+        const hash = addRes.data.hash;
+        if (!hash) throw new Error('No hash returned');
+        return hash;
+    }
+
+    /**
+     * Step 2: Poll for Metadata (File List)
+     */
+    public async getFiles(hash: string): Promise<any[]> {
+        // MatriX.125 on legacy devices needs TIME.
+        // 40 attempts * 1s = 40 seconds max wait.
+        for (let i = 0; i < 40; i++) {
+            try {
+                const torRes = await axios.get(`${TORR_API}/torrents/view?hash=${hash}`, { timeout: 3000 });
+                // Robust check for different API versions (MatriX 126 vs 137)
+                const data = torRes.data;
+                if (data) {
+                    if (data.file_stats && data.file_stats.length > 0) return data.file_stats;
+                    if (data.Files && data.Files.length > 0) return data.Files; // Legacy casing?
+                    if (Array.isArray(data) && data.length > 0) return data; // Raw array?
+                }
+            } catch (e) {
+                // Ignore transient errors during init
+            }
+            await new Promise(r => setTimeout(r, 1000));
+        }
+        return [];
+    }
+
+    /**
+     * Step 3: Get Stream URL for specific file
+     */
+    public getStreamUrl(hash: string, fileIdx: number): string {
+        return `${TORR_API}/stream/${encodeURIComponent(hash)}?index=${fileIdx}&play`;
+    }
+
+    /**
+     * Legacy: Auto-plays largest file
      */
     public async playMagnet(magnetLink: string): Promise<string | null> {
-        if (!this.isRunning) await this.init();
-
         try {
-            // 1. Add Torrent
-            // Endpoint: /torrents/add {"link": "magnet:..."}
-            const addRes = await axios.post(`${TORR_API}/torrents/add`, { link: magnetLink });
-            const hash = addRes.data.hash;
-
-            if (!hash) throw new Error('No hash returned');
-
-            // 2. Get File List to find the main movie file
-            // We need to wait a bit for metadata if it's a cold magnet, 
-            // but TorrServer usually returns hash immediately and fetches meta in background.
-            // For playback, we can use the "autoplay" feature or list files.
-
-            // Wait for metadata (simple poll)
-            let files = [];
-            for (let i = 0; i < 10; i++) {
-                const torRes = await axios.get(`${TORR_API}/torrents/view?hash=${hash}`);
-                if (torRes.data && torRes.data.file_stats && torRes.data.file_stats.length > 0) {
-                    files = torRes.data.file_stats;
-                    break;
-                }
-                await new Promise(r => setTimeout(r, 1000));
-            }
+            const hash = await this.addMagnet(magnetLink);
+            const files = await this.getFiles(hash);
 
             if (files.length === 0) return null;
 
-            // 3. Find largest file (usually the movie)
+            // Find largest file
             let maxIdx = 0;
             let maxSize = 0;
             files.forEach((f: any, idx: number) => {
@@ -122,13 +169,7 @@ class TorrServerController {
                 }
             });
 
-            // 4. Construct Stream URL
-            // http://127.0.0.1:8090/stream/{hash}?index={id}&play
-            const streamUrl = `${TORR_API}/stream/${encodeURIComponent(hash)}?index=${maxIdx}&play`;
-            console.log('[TorrCtrl] Ready to stream:', streamUrl);
-
-            return streamUrl;
-
+            return this.getStreamUrl(hash, maxIdx);
         } catch (e) {
             console.error('[TorrCtrl] Play Error', e);
             return null;

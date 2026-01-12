@@ -171,24 +171,20 @@ export const DetailsScreen: React.FC<Props> = ({ navigation, route }) => {
             }
 
             // 2. Navigate or Fail
-            if (foundUrl) {
-                navigation.navigate('Player', {
-                    item: {
-                        id: details.id,
-                        title: details.title,
-                        poster_path: details.poster_path,
-                        backdrop_path: details.backdrop_path,
-                        overview: details.overview,
-                        vote_average: details.vote_average,
-                        media_type: details.media_type,
-                    },
-                    streamUrl: foundUrl
-                });
-            } else {
-                console.warn('[Details] No source found');
-                // Optional: Show Toast or Alert
-                // Alert.alert('Ошибка', 'Источник не найден');
-            }
+            // 3. Always Navigate (Let PlayerScreen handle P2P search)
+            navigation.navigate('Player', {
+                item: {
+                    id: details.id,
+                    title: details.title,
+                    original_title: details.original_title,
+                    poster_path: details.poster_path,
+                    backdrop_path: details.backdrop_path,
+                    overview: details.overview,
+                    vote_average: details.vote_average,
+                    media_type: details.media_type,
+                },
+                streamUrl: foundUrl || '' // Pass empty string if null
+            });
 
         } catch (e) {
             console.error('[Details] Play error:', e);

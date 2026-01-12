@@ -31,7 +31,7 @@ const RAW_URL = `https://gist.githubusercontent.com/Arman11124/${GIST_ID}/raw`;
 
 const DEFAULT_CONFIG: AppConfig = {
     maintenance: false,
-    parser_url: 'http://jacred.xyz', // Public fallback
+    parser_url: 'https://api.xn--b1a5a.fun', // Worker Proxy (Reliable)
     plugins: [],
 };
 
@@ -66,7 +66,14 @@ export const fetchConfig = async (): Promise<AppConfig> => {
             }
         }
 
-        return { ...DEFAULT_CONFIG, ...data };
+        const combined = { ...DEFAULT_CONFIG, ...data };
+
+        // CORRECTION: UNCONDITIONAL FORCE (Debug Mode)
+        // We suspect Gist might return other blocked URLs
+        console.log('[Config] FORCING Worker Proxy');
+        combined.parser_url = DEFAULT_CONFIG.parser_url;
+
+        return combined;
     } catch (error) {
         console.error('[Config] Fetch failed', error);
         return DEFAULT_CONFIG;

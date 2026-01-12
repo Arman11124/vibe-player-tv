@@ -8,7 +8,7 @@ import {
     ScrollView,
     Dimensions,
 } from 'react-native';
-import { ContentItem } from '../services/TmdbService';
+import { ContentItem, getImageUrl } from '../services/TmdbService';
 import { Colors, Spacing } from '../theme/theme';
 import { Focusable } from './Focusable';
 import { Linking } from 'react-native';
@@ -131,11 +131,7 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
     if (!item) return null;
 
     // Smart URL handling - check if already full URL
-    const getImageUrl = (path: string | null | undefined, size = 'original') => {
-        if (!path) return null;
-        return path.startsWith('http') ? path : `https://wsrv.nl/?url=https://image.tmdb.org/t/p/${size}${path}`;
-    };
-    const backdropUrl = getImageUrl(item.backdrop_path) || getImageUrl(item.poster_path, 'w500');
+    const backdropUrl = getImageUrl(item.backdrop_path, 'original') || getImageUrl(item.poster_path, 'w500');
 
     return (
         <Modal
@@ -296,7 +292,7 @@ export const MovieDetailsModal: React.FC<MovieDetailsModalProps> = ({
                                                 <View style={{ flex: 1, borderRadius: 12, overflow: 'hidden' }}>
                                                     {rec.poster_path ? (
                                                         <ImageBackground
-                                                            source={{ uri: rec.poster_path?.startsWith('http') ? rec.poster_path : `https://wsrv.nl/?url=https://image.tmdb.org/t/p/w300${rec.poster_path}` }}
+                                                            source={{ uri: getImageUrl(rec.poster_path, 'w500') || undefined }}
                                                             style={{ flex: 1 }}
                                                             imageStyle={{ borderRadius: 12 }}
                                                             resizeMode="cover"

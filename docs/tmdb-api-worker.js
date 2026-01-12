@@ -2,74 +2,85 @@ export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
 
-        // БАЗОВЫЙ URL TMDB
-        const TMDB_API = "https://api.themoviedb.org";
-        const TMDB_IMAGE = "https://images.tmdb.org";
+        // ---------------------------------------------------------
+        // 0. GLOBAL CORS HANDLER
+        // ---------------------------------------------------------
+        const corsHeaders = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, HEAD, POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, Authorization, Range, X-Requested-With, User-Agent, Accept-Language',
+            'Access-Control-Max-Age': '86400',
+        };
 
-        // 0. СКАЧИВАНИЕ APK (v3.3.5)
-        if (url.pathname === '/OTT-Browser-v3.3.5.apk') {
-            const object = await env.VIBE_STATIC_BUCKET.get('OTT-Browser-v3.3.5.apk');
-            if (object === null) {
-                return new Response('APK not found', { status: 404 });
+        if (request.method === 'OPTIONS') {
+            return new Response(null, { headers: corsHeaders });
+        }
+
+        // ---------------------------------------------------------
+        // 1. STATIC CONTENT
+        // ---------------------------------------------------------
+        if (url.pathname === '/OTT-Browser-v3.3.5.apk' || url.pathname === '/app.apk') {
+            const range = request.headers.get('range');
+            let object;
+            try {
+                // Remove 'onlyIf' - strictly clean get
+                object = await env.VIBE_STATIC_BUCKET.get('OTT-Browser-v3.3.5.apk', {
+                    range: range ? request.headers : undefined
+                });
+            } catch (e) {
+                object = await env.VIBE_STATIC_BUCKET.get('OTT-Browser-v3.3.5.apk');
             }
-            const headers = new Headers();
+            if (!object) return new Response('APK not found', { status: 404, headers: corsHeaders });
+
+            const headers = new Headers(corsHeaders);
             object.writeHttpMetadata(headers);
             headers.set('etag', object.httpEtag);
-            headers.set('Content-Disposition', 'attachment; filename="OTT-Browser-v3.3.5.apk"');
+            headers.set('Content-Disposition', 'attachment; filename="app.apk"');
+            headers.set('Content-Type', 'application/vnd.android.package-archive');
+            headers.set('Accept-Ranges', 'bytes');
+            if (range && object.range) headers.set('Content-Range', object.range.toString());
+            if (object.size) headers.set('Content-Length', object.size);
+            return new Response(object.body, { headers, status: (range && object.range) ? 206 : 200 });
+        }
+
+        if (url.pathname === '/' || url.pathname === '/index.html') {
+            const object = await env.VIBE_STATIC_BUCKET.get('index.html');
+            if (!object) return new Response('404', { status: 404 });
+            const headers = new Headers(corsHeaders);
+            object.writeHttpMetadata(headers);
+            headers.set('Content-Type', 'text/html; charset=utf-8');
             return new Response(object.body, { headers });
         }
 
-        // 1. ОБРАБОТКА КАРТИНОК (Самое важное сейчас!)
-        // Если путь начинается с /t/p/ - это картинка TMDB
+        // ---------------------------------------------------------
+        // 2. TMDB IMAGE CHECK
+        // ---------------------------------------------------------
         if (url.pathname.startsWith('/t/p/')) {
-            const newUrl = TMDB_IMAGE + url.pathname;
-
-            // "Polite Browser" (Method 5)
-            // Используем рабочий домен images.tmdb.org + Valid Referer
-            try {
-                const response = await fetch(newUrl, {
-                    method: 'GET',
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        'Referer': 'https://www.themoviedb.org/', // Pretend we are the main site
-                        'Host': 'images.tmdb.org', // Be explicit
-                        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8'
-                    }
-                });
-
-                if (!response.ok) {
-                    // Detailed Error for User Debugging
-                    return new Response(`TMDB Proxy Error: ${response.status} ${response.statusText} from ${newUrl}`, {
-                        status: response.status,
-                        headers: { 'Access-Control-Allow-Origin': '*' }
-                    });
-                }
-
-                return new Response(response.body, {
-                    status: response.status,
-                    statusText: response.statusText,
-                    headers: {
-                        ...Object.fromEntries(response.headers),
-                        'Access-Control-Allow-Origin': '*',
-                        'Cache-Control': 'public, max-age=31536000'
-                    }
-                });
-            } catch (e) {
-                return new Response(`Proxy Exception (Method 5): ${e.message}`, { status: 502, headers: { 'Access-Control-Allow-Origin': '*' } });
-            }
+            // wsrv.nl redirect
+            const tmdbImageUrl = "https://images.tmdb.org" + url.pathname;
+            const wsrvUrl = `https://wsrv.nl/?url=${encodeURIComponent(tmdbImageUrl)}`;
+            const redirectHeaders = new Headers(corsHeaders);
+            redirectHeaders.set('Location', wsrvUrl);
+            return new Response(null, { status: 302, headers: redirectHeaders });
         }
 
-        // 2. ОБРАБОТКА API (JSON данных - описания, поиск)
-        // Весь остальной трафик идет на API TMDB
-        const newUrl = TMDB_API + url.pathname + url.search;
-        const response = await fetch(newUrl, {
-            method: request.method,
-            headers: {
-                ...Object.fromEntries(request.headers),
-                'Host': 'api.themoviedb.org' // Критично для обхода блокировки
-            }
-        });
+        // ---------------------------------------------------------
+        // 3. TMDB API PROXY (V14: 302 Redirect / Original Domain)
+        // ---------------------------------------------------------
 
-        return response;
+        // Re-targeting api.themoviedb.org based on user feedback ("worked without VPN")
+        const newUrl = "https://api.themoviedb.org" + url.pathname + url.search;
+
+        const redirectHeaders = new Headers(corsHeaders);
+        redirectHeaders.set('Location', newUrl);
+        // Add Connection: close to force new connection logic on client
+        redirectHeaders.set('Connection', 'close');
+
+        // Using 302 Found - standard temporary redirect, very compatible
+        return new Response(null, {
+            status: 302,
+            statusText: "Found",
+            headers: redirectHeaders
+        });
     }
 };
