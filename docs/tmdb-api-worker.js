@@ -19,16 +19,17 @@ export default {
         // ---------------------------------------------------------
         // 1. STATIC CONTENT
         // ---------------------------------------------------------
-        if (url.pathname === '/OTT-Browser-v3.3.5.apk' || url.pathname === '/app.apk') {
+        if (url.pathname === '/VibePlayer_v4.1.0.apk' || url.pathname === '/OTT-Browser-v3.3.5.apk' || url.pathname === '/app.apk') {
             const range = request.headers.get('range');
+            const apkName = url.pathname.includes('4.1.0') ? 'VibePlayer_v4.1.0.apk' : 'OTT-Browser-v3.3.5.apk';
             let object;
             try {
                 // Remove 'onlyIf' - strictly clean get
-                object = await env.VIBE_STATIC_BUCKET.get('OTT-Browser-v3.3.5.apk', {
+                object = await env.VIBE_STATIC_BUCKET.get(apkName, {
                     range: range ? request.headers : undefined
                 });
             } catch (e) {
-                object = await env.VIBE_STATIC_BUCKET.get('OTT-Browser-v3.3.5.apk');
+                object = await env.VIBE_STATIC_BUCKET.get(apkName);
             }
             if (!object) return new Response('APK not found', { status: 404, headers: corsHeaders });
 
