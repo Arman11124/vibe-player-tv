@@ -19,9 +19,11 @@ export default {
         // ---------------------------------------------------------
         // 1. STATIC CONTENT
         // ---------------------------------------------------------
-        if (url.pathname === '/VibePlayer_v4.1.0.apk' || url.pathname === '/OTT-Browser-v3.3.5.apk' || url.pathname === '/app.apk') {
+        if (url.pathname === '/VibePlayer_v4.1.1.apk' || url.pathname === '/VibePlayer_v4.1.0.apk' || url.pathname === '/OTT-Browser-v3.3.5.apk' || url.pathname === '/app.apk') {
             const range = request.headers.get('range');
-            const apkName = url.pathname.includes('4.1.0') ? 'VibePlayer_v4.1.0.apk' : 'OTT-Browser-v3.3.5.apk';
+            let apkName = 'VibePlayer_v4.1.1.apk'; // Default to latest
+            if (url.pathname.includes('4.1.0')) apkName = 'VibePlayer_v4.1.0.apk';
+            else if (url.pathname.includes('3.3.5')) apkName = 'OTT-Browser-v3.3.5.apk';
             let object;
             try {
                 // Remove 'onlyIf' - strictly clean get

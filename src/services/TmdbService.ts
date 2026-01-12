@@ -3,7 +3,7 @@ import { Alert } from 'react-native'; // Added for debug
 
 // TODO: Move to .env file via react-native-config
 export const TMDB_API_KEY = 'b93ef6c5dd891291cb040d2ffa577a7a';
-const BASE_URL = 'https://api.themoviedb.org/3';
+const BASE_URL = 'https://api.xn--b1a5a.fun/3'; // Proxied via Cloudflare Worker
 const IMAGE_BASE_URL = 'https://api.xn--b1a5a.fun/t/p'; // Routed via Smart Worker
 
 // Helper to construct image URLs via public proxy (wsrv.nl) - Emergency Fallback
