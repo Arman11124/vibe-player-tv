@@ -57,7 +57,63 @@ export default {
         }
 
         // ---------------------------------------------------------
-        // 2. TMDB IMAGE CHECK
+        // 2. TORRENT SEARCH (V28.1: Rutor Scraper via AllOrigins)
+        // ---------------------------------------------------------
+        if (url.pathname.includes('/search')) {
+            const query = url.searchParams.get('q') || '';
+            if (!query) return new Response('No query', { status: 400, headers: corsHeaders });
+
+            // Rutor Search URL
+            const rutorUrl = `http://rutor.info/search/0/0/0/0/${encodeURIComponent(query)}`;
+            // Proxy via AllOrigins to get HTML (bypass CORS/Blocks)
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rutorUrl)}`;
+
+            try {
+                const response = await fetch(proxyUrl, {
+                    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
+                });
+                const html = await response.text();
+
+                // Regex to parse Rutor Table (Robust for Multiline)
+                // Matches: 
+                // 1. magnet link hash (captured by ([a-zA-Z0-9]+))
+                // 2. Title (captured by ([^<]+))
+                // 3. Size (captured by ([^<]+))
+                // 4. Seeds (captured by ([0-9]+))
+                // Using [\s\S]*? to match across newlines between tags
+
+                const regex = /magnet:\?xt=urn:btih:([a-zA-Z0-9]+)&[\s\S]*?href="\/torrent\/\d+\/[^"]+">([^<]+)<\/a>[\s\S]*?align="right">([^<]+)<\/td>[\s\S]*?class="green">.+?>([0-9]+)</g;
+
+                const results = [];
+                let match;
+                while ((match = regex.exec(html)) !== null) {
+                    const magnetHash = match[1];
+                    const fullMagnet = `magnet:?xt=urn:btih:${magnetHash}`;
+                    results.push({
+                        title: match[2],
+                        magnet: fullMagnet,
+                        size: match[3].replace(/&nbsp;/g, ' '),
+                        seeds: parseInt(match[4]),
+                        peers: 0,
+                        source: 'Rutor'
+                    });
+                }
+
+                // Return JSON
+                const responseHeaders = new Headers(corsHeaders);
+                responseHeaders.set('Content-Type', 'application/json');
+                return new Response(JSON.stringify(results), { headers: responseHeaders });
+
+            } catch (e) {
+                return new Response(JSON.stringify({ error: 'Search failed', details: e.message }), {
+                    status: 500,
+                    headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+                });
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 3. TMDB IMAGE CHECK
         // ---------------------------------------------------------
         if (url.pathname.startsWith('/t/p/')) {
             const tmdbImageUrl = "https://image.tmdb.org" + url.pathname;
@@ -68,29 +124,24 @@ export default {
         }
 
         // ---------------------------------------------------------
-        // 3. TMDB API PROXY (V27: The Proxy Swarm)
+        // 4. TMDB API PROXY (V27: The Proxy Swarm)
         // ---------------------------------------------------------
-        // Goal: Bypass DNS Poisoning (127.0.0.1) in Moscow Region.
-        // Strategy: Iterate through public proxies until one works.
 
         const targetUrl = "https://api.themoviedb.org" + url.pathname + url.search;
         const encodedUrl = encodeURIComponent(targetUrl);
 
-        // List of proxies to try (Priority Order)
-        // Note: corsproxy.io was blocked, but we retry. corsproxy.org is new.
         const proxies = [
             { name: 'corsproxy.org', url: `https://corsproxy.org/?${encodedUrl}` },
             { name: 'corsproxy.io', url: `https://corsproxy.io/?url=${encodedUrl}` },
             { name: 'codetabs', url: `https://api.codetabs.com/v1/proxy?quest=${encodedUrl}` },
             { name: 'allorigins', url: `https://api.allorigins.win/raw?url=${encodedUrl}` },
-            { name: 'direct', url: targetUrl } // Final Fallback
+            { name: 'direct', url: targetUrl }
         ];
 
         let lastError = null;
 
         for (const proxy of proxies) {
             try {
-                // If Direct, we use special headers
                 let fetchOptions = {
                     method: request.method,
                     headers: {
@@ -105,28 +156,21 @@ export default {
 
                 const response = await fetch(proxy.url, fetchOptions);
 
-                // Validation: Must be 200 OK (or 401 if key is bad, which is "Success" for connectivity)
-                // And Content-Type should happen to be JSON usually.
                 if (response.status === 200 || response.status === 401) {
                     const responseHeaders = new Headers(corsHeaders);
                     responseHeaders.set('Content-Type', 'application/json');
-                    responseHeaders.set('X-Vibe-Proxy', proxy.name); // Debug Info
+                    responseHeaders.set('X-Vibe-Proxy', proxy.name);
 
                     return new Response(response.body, {
                         status: response.status,
                         headers: responseHeaders
                     });
-                } else {
-                    // console.log(`Proxy ${proxy.name} failed with status: ${response.status}`);
-                    // Continue to next proxy
                 }
             } catch (e) {
                 lastError = e;
-                // console.log(`Proxy ${proxy.name} error: ${e.message}`);
             }
         }
 
-        // If all fail
         return new Response(JSON.stringify({
             error: 'All proxies failed',
             last_error: lastError ? lastError.message : 'Unknown',
