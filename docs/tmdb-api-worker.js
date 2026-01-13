@@ -1,6 +1,8 @@
 export default {
     async fetch(request, env, ctx) {
         const url = new URL(request.url);
+        // DEBUG: Immediate return to check environment
+        if (url.pathname.includes('debug')) return new Response("DEBUG OK");
 
         // ---------------------------------------------------------
         // 0. GLOBAL CORS HANDLER
@@ -26,7 +28,6 @@ export default {
             else if (url.pathname.includes('3.3.5')) apkName = 'OTT-Browser-v3.3.5.apk';
             let object;
             try {
-                // Remove 'onlyIf' - strictly clean get
                 object = await env.VIBE_STATIC_BUCKET.get(apkName, {
                     range: range ? request.headers : undefined
                 });
@@ -38,7 +39,7 @@ export default {
             const headers = new Headers(corsHeaders);
             object.writeHttpMetadata(headers);
             headers.set('etag', object.httpEtag);
-            headers.set('Content-Disposition', 'attachment; filename="app.apk"');
+            headers.set('Content-Disposition', `attachment; filename="${apkName}"`);
             headers.set('Content-Type', 'application/vnd.android.package-archive');
             headers.set('Accept-Ranges', 'bytes');
             if (range && object.range) headers.set('Content-Range', object.range.toString());
@@ -59,7 +60,6 @@ export default {
         // 2. TMDB IMAGE CHECK
         // ---------------------------------------------------------
         if (url.pathname.startsWith('/t/p/')) {
-            // wsrv.nl redirect for images
             const tmdbImageUrl = "https://image.tmdb.org" + url.pathname;
             const wsrvUrl = `https://wsrv.nl/?url=${encodeURIComponent(tmdbImageUrl)}`;
             const redirectHeaders = new Headers(corsHeaders);
@@ -68,33 +68,72 @@ export default {
         }
 
         // ---------------------------------------------------------
-        // 3. TMDB API PROXY (V15: Direct Fetch - No Redirect)
+        // 3. TMDB API PROXY (V27: The Proxy Swarm)
         // ---------------------------------------------------------
-        try {
-            const tmdbUrl = "https://api.themoviedb.org" + url.pathname + url.search;
+        // Goal: Bypass DNS Poisoning (127.0.0.1) in Moscow Region.
+        // Strategy: Iterate through public proxies until one works.
 
-            const tmdbResponse = await fetch(tmdbUrl, {
-                method: request.method,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        const targetUrl = "https://api.themoviedb.org" + url.pathname + url.search;
+        const encodedUrl = encodeURIComponent(targetUrl);
+
+        // List of proxies to try (Priority Order)
+        // Note: corsproxy.io was blocked, but we retry. corsproxy.org is new.
+        const proxies = [
+            { name: 'corsproxy.org', url: `https://corsproxy.org/?${encodedUrl}` },
+            { name: 'corsproxy.io', url: `https://corsproxy.io/?url=${encodedUrl}` },
+            { name: 'codetabs', url: `https://api.codetabs.com/v1/proxy?quest=${encodedUrl}` },
+            { name: 'allorigins', url: `https://api.allorigins.win/raw?url=${encodedUrl}` },
+            { name: 'direct', url: targetUrl } // Final Fallback
+        ];
+
+        let lastError = null;
+
+        for (const proxy of proxies) {
+            try {
+                // If Direct, we use special headers
+                let fetchOptions = {
+                    method: request.method,
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept': 'application/json'
+                    }
+                };
+
+                if (proxy.name === 'direct') {
+                    fetchOptions.headers['Authorization'] = request.headers.get('Authorization') || '';
                 }
-            });
 
-            const responseHeaders = new Headers(corsHeaders);
-            responseHeaders.set('Content-Type', 'application/json');
+                const response = await fetch(proxy.url, fetchOptions);
 
-            const body = await tmdbResponse.text();
-            return new Response(body, {
-                status: tmdbResponse.status,
-                headers: responseHeaders
-            });
-        } catch (e) {
-            return new Response(JSON.stringify({ error: 'Proxy error', message: e.message }), {
-                status: 500,
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-            });
+                // Validation: Must be 200 OK (or 401 if key is bad, which is "Success" for connectivity)
+                // And Content-Type should happen to be JSON usually.
+                if (response.status === 200 || response.status === 401) {
+                    const responseHeaders = new Headers(corsHeaders);
+                    responseHeaders.set('Content-Type', 'application/json');
+                    responseHeaders.set('X-Vibe-Proxy', proxy.name); // Debug Info
+
+                    return new Response(response.body, {
+                        status: response.status,
+                        headers: responseHeaders
+                    });
+                } else {
+                    // console.log(`Proxy ${proxy.name} failed with status: ${response.status}`);
+                    // Continue to next proxy
+                }
+            } catch (e) {
+                lastError = e;
+                // console.log(`Proxy ${proxy.name} error: ${e.message}`);
+            }
         }
+
+        // If all fail
+        return new Response(JSON.stringify({
+            error: 'All proxies failed',
+            last_error: lastError ? lastError.message : 'Unknown',
+            tried: proxies.map(p => p.name)
+        }), {
+            status: 502,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
     }
 };
