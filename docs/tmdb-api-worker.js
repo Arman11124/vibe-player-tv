@@ -57,56 +57,95 @@ export default {
         }
 
         // ---------------------------------------------------------
-        // 2. TORRENT SEARCH (V28.1: Rutor Scraper via AllOrigins)
+        // 2. TORRENT SEARCH (V31: Smart Swarm + Fuzzy Fallback)
         // ---------------------------------------------------------
         if (url.pathname.includes('/search')) {
             const query = url.searchParams.get('q') || '';
             if (!query) return new Response('No query', { status: 400, headers: corsHeaders });
 
-            // Rutor Search URL
-            const rutorUrl = `http://rutor.info/search/0/0/0/0/${encodeURIComponent(query)}`;
-            // Proxy via AllOrigins to get HTML (bypass CORS/Blocks)
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(rutorUrl)}`;
+            // Helper: Perform Search with Swarm
+            async function performSearch(searchQuery) {
+                const rutorUrl = `http://rutor.info/search/0/0/0/0/${encodeURIComponent(searchQuery)}`;
+                const encodedRutorUrl = encodeURIComponent(rutorUrl);
 
-            try {
-                const response = await fetch(proxyUrl, {
-                    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
-                });
-                const html = await response.text();
+                const searchProxies = [
+                    { name: 'corsproxy.io', url: `https://corsproxy.io/?url=${encodedRutorUrl}` },
+                    { name: 'codetabs', url: `https://api.codetabs.com/v1/proxy?quest=${encodedRutorUrl}` },
+                    { name: 'allorigins', url: `https://api.allorigins.win/raw?url=${encodedRutorUrl}` },
+                    { name: 'corsproxy.org', url: `https://corsproxy.org/?${encodedRutorUrl}` }
+                ];
 
-                // Regex to parse Rutor Table (Robust for Multiline)
-                // Matches: 
-                // 1. magnet link hash (captured by ([a-zA-Z0-9]+))
-                // 2. Title (captured by ([^<]+))
-                // 3. Size (captured by ([^<]+))
-                // 4. Seeds (captured by ([0-9]+))
-                // Using [\s\S]*? to match across newlines between tags
+                let results = [];
+                let success = false;
+                let error = null;
 
-                const regex = /magnet:\?xt=urn:btih:([a-zA-Z0-9]+)&[\s\S]*?href="\/torrent\/\d+\/[^"]+">([^<]+)<\/a>[\s\S]*?align="right">([^<]+)<\/td>[\s\S]*?class="green">.+?>([0-9]+)</g;
+                for (const proxy of searchProxies) {
+                    try {
+                        const response = await fetch(proxy.url, {
+                            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36' }
+                        });
 
-                const results = [];
-                let match;
-                while ((match = regex.exec(html)) !== null) {
-                    const magnetHash = match[1];
-                    const fullMagnet = `magnet:?xt=urn:btih:${magnetHash}`;
-                    results.push({
-                        title: match[2],
-                        magnet: fullMagnet,
-                        size: match[3].replace(/&nbsp;/g, ' '),
-                        seeds: parseInt(match[4]),
-                        peers: 0,
-                        source: 'Rutor'
-                    });
+                        if (response.status !== 200) continue;
+
+                        const html = await response.text();
+
+                        // Content Validation: Must have magnets or be standard empty page
+                        if (!html.includes('magnet:') && !html.includes('rutor.info')) {
+                            continue;
+                        }
+
+                        // Regex Parse
+                        const regex = /magnet:\?xt=urn:btih:([a-zA-Z0-9]+)&[\s\S]*?href="\/torrent\/\d+\/[^"]+">([^<]+)<\/a>[\s\S]*?align="right">([^<]+)<\/td>[\s\S]*?class="green">.+?>([0-9]+)</g;
+
+                        let match;
+                        while ((match = regex.exec(html)) !== null) {
+                            results.push({
+                                title: match[2],
+                                magnet: `magnet:?xt=urn:btih:${match[1]}`,
+                                size: match[3].replace(/&nbsp;/g, ' '),
+                                seeds: parseInt(match[4]),
+                                peers: 0,
+                                source: 'Rutor'
+                            });
+                        }
+
+                        // If we got results OR a valid empty page, stop trying proxies
+                        if (results.length > 0 || html.includes('rutor.info')) {
+                            success = true;
+                            break;
+                        }
+                    } catch (e) {
+                        error = e;
+                    }
                 }
+                return { results, success, error };
+            }
 
-                // Return JSON
+            // 1. Try Exact Query
+            let { results, success, error } = await performSearch(query);
+
+            // 2. Fallback: If 0 results and query ends with Year (e.g. "Fallout 2024"), strip it
+            if (success && results.length === 0) {
+                const yearRegex = /\s(19|20)\d{2}$/;
+                if (yearRegex.test(query)) {
+                    const fallbackQuery = query.replace(yearRegex, '');
+                    // console.log(`Fallback Search: ${fallbackQuery}`);
+                    const fallback = await performSearch(fallbackQuery);
+                    if (fallback.success) {
+                        results = fallback.results;
+                        success = true; // Use valid fallback results
+                        // Append warning to title? No, user just wants to watch.
+                    }
+                }
+            }
+
+            if (success) {
                 const responseHeaders = new Headers(corsHeaders);
                 responseHeaders.set('Content-Type', 'application/json');
                 return new Response(JSON.stringify(results), { headers: responseHeaders });
-
-            } catch (e) {
-                return new Response(JSON.stringify({ error: 'Search failed', details: e.message }), {
-                    status: 500,
+            } else {
+                return new Response(JSON.stringify({ error: 'Search failed', details: error ? error.message : 'No Valid Proxy' }), {
+                    status: 502,
                     headers: { ...corsHeaders, 'Content-Type': 'application/json' }
                 });
             }
@@ -126,10 +165,8 @@ export default {
         // ---------------------------------------------------------
         // 4. TMDB API PROXY (V27: The Proxy Swarm)
         // ---------------------------------------------------------
-
         const targetUrl = "https://api.themoviedb.org" + url.pathname + url.search;
         const encodedUrl = encodeURIComponent(targetUrl);
-
         const proxies = [
             { name: 'corsproxy.org', url: `https://corsproxy.org/?${encodedUrl}` },
             { name: 'corsproxy.io', url: `https://corsproxy.io/?url=${encodedUrl}` },
