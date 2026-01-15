@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Default configuration: Allow cleartext globally (Fix for IP-based API) -->
+    <base-config cleartextTrafficPermitted="true" />
+
+    <!-- Domain-specific configuration: Allow cleartext for localhost -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">167.99.201.47</domain>
+    </domain-config>
+</network-security-config>

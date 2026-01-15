@@ -1,0 +1,15 @@
+{
+    "name": "edge-worker",
+    "version": "1.0.0",
+    "private": true,
+    "main": "src/index.js",
+    "scripts": {
+        "deploy": "wrangler deploy"
+    },
+    "devDependencies": {
+        "wrangler": "^3.0.0"
+    },
+    "dependencies": {
+        "html-entities": "^2.6.0"
+    }
+}

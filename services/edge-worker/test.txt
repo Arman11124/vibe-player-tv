@@ -1,0 +1,4 @@
+This is a test file to verify network connectivity between your TV and the VibePlayer server.
+If you can read this, your internet connection to our server is working correctly.
+Date: 2026-01-14
+Status: OK

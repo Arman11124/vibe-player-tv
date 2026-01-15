@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+set timeout 60
+spawn ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@167.99.201.47 "cd /opt/ott-gateway/infra && docker compose logs --tail=50 gateway"
+expect {
+  "password:" { send "Docker!2026Serverx\r"; exp_continue }
+  eof
+}
+catch wait result
+exit [lindex $result 3]

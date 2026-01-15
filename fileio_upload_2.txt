@@ -1,0 +1,57 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host file.io:443 was resolved.
+* IPv6: 2606:4700:3030::6815:4234, 2606:4700:3032::ac43:9cfb
+* IPv4: 104.21.66.52, 172.67.156.251
+*   Trying [2606:4700:3030::6815:4234]:443...
+* Connected to file.io (2606:4700:3030::6815:4234) port 443
+* ALPN: curl offers h2,http/1.1
+* (304) (OUT), TLS handshake, Client hello (1):
+} [312 bytes data]
+*  CAfile: /etc/ssl/cert.pem
+*  CApath: none
+* (304) (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* (304) (IN), TLS handshake, Unknown (8):
+{ [19 bytes data]
+* (304) (IN), TLS handshake, Certificate (11):
+{ [2515 bytes data]
+* (304) (IN), TLS handshake, CERT verify (15):
+{ [80 bytes data]
+* (304) (IN), TLS handshake, Finished (20):
+{ [36 bytes data]
+* (304) (OUT), TLS handshake, Finished (20):
+} [36 bytes data]
+* SSL connection using TLSv1.3 / AEAD-CHACHA20-POLY1305-SHA256 / [blank] / UNDEF
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=file.io
+*  start date: Dec 30 00:50:02 2025 GMT
+*  expire date: Mar 30 01:48:37 2026 GMT
+*  subjectAltName: host "file.io" matched cert's "file.io"
+*  issuer: C=US; O=Google Trust Services; CN=WE1
+*  SSL certificate verify ok.
+* using HTTP/2
+* [HTTP/2] [1] OPENED stream for https://file.io/
+* [HTTP/2] [1] [:method: POST]
+* [HTTP/2] [1] [:scheme: https]
+* [HTTP/2] [1] [:authority: file.io]
+* [HTTP/2] [1] [:path: /]
+* [HTTP/2] [1] [user-agent: curl/8.7.1]
+* [HTTP/2] [1] [accept: */*]
+* [HTTP/2] [1] [content-length: 66383957]
+* [HTTP/2] [1] [content-type: multipart/form-data; boundary=------------------------ruxXKLhmKNndIybjKnnuGI]
+> POST / HTTP/2
+> Host: file.io
+> User-Agent: curl/8.7.1
+> Accept: */*
+> Content-Length: 66383957
+> Content-Type: multipart/form-data; boundary=------------------------ruxXKLhmKNndIybjKnnuGI
+> 
+} [65349 bytes data]
+  0 63.3M    0     0    0 65349      0  54337  0:20:21  0:00:01  0:20:20 54366  0 63.3M    0     0    0 65349      0  29597  0:37:22  0:00:02  0:37:20 29609  0 63.3M    0     0    0 65349      0  20356  0:54:21  0:00:03  0:54:18 20357  0 63.3M    0     0    0 65349      0  15504  1:11:21  0:00:04  1:11:17 15507  0 63.3M    0     0    0 65349      0  12528  1:28:18  0:00:05  1:28:13 12528  0 63.3M    0     0    0 65349      0  10510  1:45:16  0:00:06  1:45:10     0  0 63.3M    0     0    0 65349      0   9047  2:02:17  0:00:07  2:02:10     0  0 63.3M    0     0    0 65349      0   7943  2:19:17  0:00:08  2:19:09     0  0 63.3M    0     0    0 65349      0   7081  2:36:14  0:00:09  2:36:05     0  0 63.3M    0     0    0 65349      0   6385  2:53:16  0:00:10  2:53:06     0  0 63.3M    0     0    0 65349      0   5814  3:10:17  0:00:11  3:10:06     0  0 63.3M    0     0    0 65349      0   5338  3:27:16  0:00:12  3:27:04     0  0 63.3M    0     0    0 65349      0   4935  3:44:11  0:00:13  3:43:58     0  0 63.3M    0     0    0 65349      0   4587  4:01:12  0:00:14  4:00:58     0  0 63.3M    0     0    0 65349      0   4285  4:18:12  0:00:15  4:17:57     0  0 63.3M    0     0    0 65349      0   4020  4:35:13  0:00:16  4:34:57     0  0 63.3M    0     0    0 65349      0   3786  4:52:14  0:00:17  4:51:57     0* Recv failure: Operation timed out
+* LibreSSL SSL_read: LibreSSL/3.3.6: error:02FFF03C:system library:func(4095):Operation timed out, errno 60
+* Failed receiving HTTP2 data: 56(Failure when receiving data from the peer)
+  0 63.3M    0     0    0 65349      0   3628  5:04:57  0:00:18  5:04:39     0
+* Connection #0 to host file.io left intact
+curl: (56) Recv failure: Operation timed out
