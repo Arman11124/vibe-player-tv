@@ -79,8 +79,8 @@ android {
         applicationId "com.ottbrowser"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4219
-        versionName "4.2.19-HYDRA-RESCUE"
+        versionCode 4220
+        versionName "4.2.20-HYDRA-RESCUE"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }
