@@ -2,8 +2,8 @@ import axios from 'axios';
 import { Alert } from 'react-native';
 
 export const TMDB_API_KEY = 'b93ef6c5dd891291cb040d2ffa577a7a';
-const BASE_URL = 'https://api.xn--b1a5a.fun/3';
-const IMAGE_BASE_URL = 'https://api.xn--b1a5a.fun/t/p/w500';
+const BASE_URL = 'http://api.xn--b1a5a.fun/3';
+const IMAGE_BASE_URL = 'http://api.xn--b1a5a.fun/t/p/w500';
 
 const client = axios.create({
   baseURL: BASE_URL,

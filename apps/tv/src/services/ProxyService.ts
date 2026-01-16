@@ -4,14 +4,16 @@ import axios from 'axios';
 // These allow us to bypass ISP blocks on specific APIs by routing traffic through different countries/servers.
 const PROXIES = [
     // 1. ELITE WORKER: Our private, high-speed tunnel (Primary)
+    // Uses HTTP to bypass SSL Handshake issues on old Android TVs
     {
         name: 'elite-worker', url: (target: string) => {
             const url = new URL(target);
-            return `https://api.xn--b1a5a.fun${url.pathname}${url.search}`;
+            return `http://api.xn--b1a5a.fun${url.pathname}${url.search}`;
         }, weight: 1
     },
 
     // 2. PUBLIC SWARM: Decentralized fallbacks
+    { name: 'yacdn', url: (target: string) => `https://yacdn.org/proxy/${target}`, weight: 2 },
     { name: 'corsproxy', url: (target: string) => `https://corsproxy.io/?url=${encodeURIComponent(target)}`, weight: 2 },
     { name: 'codetabs', url: (target: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(target)}`, weight: 2 },
     { name: 'allorigins', url: (target: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`, weight: 3 },
@@ -35,7 +37,7 @@ export class ProxyService {
         // Try ELITE WORKER first (fast/private)
         try {
             const urlObj = new URL(targetUrl);
-            const eliteUrl = `https://api.xn--b1a5a.fun${urlObj.pathname}${urlObj.search}`;
+            const eliteUrl = `http://api.xn--b1a5a.fun${urlObj.pathname}${urlObj.search}`;
             return await axios.get(eliteUrl, { ...options, timeout: 5000 });
         } catch (e) {
             console.warn('[Proxy] Elite Worker failed, triggering Hydra Swarm...');
@@ -71,7 +73,7 @@ export class ProxyService {
     static getProxiedImageUrl(path: string): string {
         if (!path) return '';
         const cleanPath = path.startsWith('/') ? path : `/${path}`;
-        return `https://api.xn--b1a5a.fun/t/p/w500${cleanPath}`;
+        return `http://api.xn--b1a5a.fun/t/p/w500${cleanPath}`;
     }
 
     /**
