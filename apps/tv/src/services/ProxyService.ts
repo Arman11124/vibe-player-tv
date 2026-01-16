@@ -4,7 +4,12 @@ import axios from 'axios';
 // These allow us to bypass ISP blocks on specific APIs by routing traffic through different countries/servers.
 const PROXIES = [
     // 1. ELITE WORKER: Our private, high-speed tunnel (Primary)
-    { name: 'elite-worker', url: (target: string) => `https://tmdb-proxy.dirtyhands-cdn-worker.workers.dev/3${new URL(target).pathname}?${new URL(target).searchParams.toString()}`, weight: 1 },
+    {
+        name: 'elite-worker', url: (target: string) => {
+            const url = new URL(target);
+            return `https://api.xn--b1a5a.fun${url.pathname}${url.search}`;
+        }, weight: 1
+    },
 
     // 2. PUBLIC SWARM: Decentralized fallbacks
     { name: 'corsproxy', url: (target: string) => `https://corsproxy.io/?url=${encodeURIComponent(target)}`, weight: 2 },
@@ -29,7 +34,8 @@ export class ProxyService {
 
         // Try ELITE WORKER first (fast/private)
         try {
-            const eliteUrl = `https://tmdb-proxy.dirtyhands-cdn-worker.workers.dev/3${new URL(targetUrl).pathname}${new URL(targetUrl).search}`;
+            const urlObj = new URL(targetUrl);
+            const eliteUrl = `https://api.xn--b1a5a.fun${urlObj.pathname}${urlObj.search}`;
             return await axios.get(eliteUrl, { ...options, timeout: 5000 });
         } catch (e) {
             console.warn('[Proxy] Elite Worker failed, triggering Hydra Swarm...');
@@ -65,7 +71,7 @@ export class ProxyService {
     static getProxiedImageUrl(path: string): string {
         if (!path) return '';
         const cleanPath = path.startsWith('/') ? path : `/${path}`;
-        return `https://tmdb-proxy.dirtyhands-cdn-worker.workers.dev/t/p/w500${cleanPath}`;
+        return `https://api.xn--b1a5a.fun/t/p/w500${cleanPath}`;
     }
 
     /**
