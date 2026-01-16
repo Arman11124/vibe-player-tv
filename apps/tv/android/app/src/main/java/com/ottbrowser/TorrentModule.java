@@ -2,6 +2,8 @@ package com.ottbrowser;
 
 import android.os.Environment;
 import android.util.Log;
+import android.content.Intent;
+import android.os.Build;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -48,24 +50,40 @@ public class TorrentModule extends ReactContextBaseJavaModule {
             }
 
             Log.d(TAG, "Starting LibTorrent Engine...");
+            
+            // 1. Ignite the Immortal Shield (Foreground Service)
+            Intent serviceIntent = new Intent(reactContext, TorrService.class);
+            serviceIntent.setAction(TorrService.ACTION_START);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                reactContext.startForegroundService(serviceIntent);
+            } else {
+                reactContext.startService(serviceIntent);
+            }
+
+            // 2. Apply "Low-End TV" Expert Settings
             SettingsPack sp = new SettingsPack()
-                    .activeDownloads(3) 
-                    .connectionsLimit(384) // Balanced limit for Android TV stability
-                    .alertQueueSize(1000) // Increase queue to handle swarm activity
+                    .activeDownloads(1)      // Expert: Focus on the ONE movie user is watching
+                    .connectionsLimit(60)    // Expert: 60 peers max to save cheap WiFi chips
+                    .alertQueueSize(500)     
                     .downloadRateLimit(0)
                     .uploadRateLimit(0);
-
+                    
             // Apply Performance Settings via SWIG
             settings_pack pack = sp.swig();
+            // cache_size removed for compatibility with libtorrent4j 2.1.0 (mmap)
             pack.set_bool(settings_pack.bool_types.enable_dht.swigValue(), true);
-            pack.set_bool(settings_pack.bool_types.enable_lsd.swigValue(), true); // Local Peer Discovery
-            pack.set_bool(settings_pack.bool_types.enable_upnp.swigValue(), true); // Port Forwarding
-            pack.set_bool(settings_pack.bool_types.enable_natpmp.swigValue(), true); // Port Forwarding
+            pack.set_bool(settings_pack.bool_types.enable_lsd.swigValue(), true);
+            pack.set_bool(settings_pack.bool_types.enable_upnp.swigValue(), true);
+            pack.set_bool(settings_pack.bool_types.enable_natpmp.swigValue(), true);
+            
+            // Expert: Suggest Mode for Streaming (Read Cache Priority)
+            pack.set_int(settings_pack.int_types.suggest_mode.swigValue(), 
+                         settings_pack.suggest_mode_t.suggest_read_cache.swigValue());
 
             session.start(new SessionParams(sp));
 
             // Start HTTP Server
-            initServer(); // Call the new initServer method
+            initServer(); 
 
             promise.resolve("Engine Started");
         } catch (Exception e) {
@@ -84,6 +102,12 @@ public class TorrentModule extends ReactContextBaseJavaModule {
                 server.stop();
                 server = null;
             }
+            
+            // Stop the Shield
+            Intent serviceIntent = new Intent(reactContext, TorrService.class);
+            serviceIntent.setAction(TorrService.ACTION_STOP);
+            reactContext.startService(serviceIntent);
+
             promise.resolve("Engine Stopped");
         } catch (Exception e) {
             promise.reject("STOP_ERROR", e);

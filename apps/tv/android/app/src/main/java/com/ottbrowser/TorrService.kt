@@ -5,19 +5,32 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.IBinder
+import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import java.io.File
-import java.io.BufferedReader
-import java.io.InputStreamReader
 
+/**
+ * The "Immortal Shield" Service.
+ * Holds WakeLocks and WifiLocks to prevent Android from killing the P2P Engine
+ * during playback or when the screen is off.
+ */
 class TorrService : Service() {
 
-    private var process: Process? = null
+    private var wakeLock: PowerManager.WakeLock? = null
+    private var wifiLock: WifiManager.WifiLock? = null
+    
     private val CHANNEL_ID = "TorrServerChannel"
     private val NOTIFICATION_ID = 1337
+
+    companion object {
+        const val ACTION_START = "ACTION_START"
+        const val ACTION_STOP = "ACTION_STOP"
+    }
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -25,88 +38,61 @@ class TorrService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        
+        // 1. CPU Lock: Keep the heart beating even if screen is off
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "VibePlayer::P2PCore"
+        ).apply {
+            acquire(4 * 60 * 60 * 1000L) // 4 hours timeout safety
+        }
+
+        // 2. Wi-Fi Lock: Prevent radio low-power mode
+        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        wifiLock = wifiManager.createWifiLock(
+            WifiManager.WIFI_MODE_FULL_HIGH_PERF,
+            "VibePlayer::WifiPerf"
+        ).apply {
+            acquire()
+        }
+        
         createNotificationChannel()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val action = intent?.action
-        if (action == "STOP") {
-            stopSelf()
+        
+        if (action == ACTION_STOP) {
+            stopForegroundService()
             return START_NOT_STICKY
         }
 
         startForeground(NOTIFICATION_ID, createNotification())
-        
-        if (process == null) {
-            startTorrServer()
-        }
+        return START_STICKY // Restart if killed
+    }
 
-        return START_STICKY
+    private fun stopForegroundService() {
+        try {
+            if (wakeLock?.isHeld == true) wakeLock?.release()
+            if (wifiLock?.isHeld == true) wifiLock?.release()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        process?.destroy()
-        process = null
-    }
-
-    private fun startTorrServer() {
-        Thread {
-            try {
-                // The HACK: Android extracts native libs to a specific folder. 
-                // We access it directly to execute the binary.
-                val libPath = applicationInfo.nativeLibraryDir + "/libtorrserver.so"
-                val binary = File(libPath)
-                
-                if (!binary.exists()) {
-                    println("[TorrService] Binary not found at $libPath")
-                    return@Thread
-                }
-
-                if (!binary.canExecute()) {
-                    binary.setExecutable(true)
-                }
-
-                val dataDir = filesDir.absolutePath + "/torrserver_data"
-                File(dataDir).mkdirs()
-
-                // Command: ./libtorrserver.so -d /data/... -p 8090
-                val pb = ProcessBuilder(
-                    libPath, 
-                    "-d", dataDir, 
-                    "-p", "8090" // Default port
-                )
-                
-                // Redirect logs to logcat if needed, or consume them to prevent blocking
-                pb.redirectErrorStream(true)
-                
-                process = pb.start()
-                println("[TorrService] Started TorrServer at pid ${process.toString()}")
-                
-                // Consume stdout to prevent buffer deadlock
-                // logic: Read in a streamlined loop, handling interrupts
-                val reader = BufferedReader(InputStreamReader(process!!.inputStream))
-                var line: String?
-                try {
-                    while (reader.readLine().also { line = it } != null) {
-                        // Optional: Log only critical errors or startup messages
-                        // if (line?.contains("error", true) == true) println("[TorrServer] $line")
-                    }
-                } catch (e: Exception) {
-                    // Stream closed likely due to destroy()
-                }
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }.start()
+        stopForegroundService()
     }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
-                "TorrServer Engine",
+                "VibePlayer Background",
                 NotificationManager.IMPORTANCE_LOW
             )
             val manager = getSystemService(NotificationManager::class.java)
@@ -123,9 +109,10 @@ class TorrService : Service() {
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("VibePlayer Engine")
-            .setContentText("P2P Daemon is active")
+            .setContentText("Accelerating P2P Stream...")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
+            .setOngoing(true)
             .build()
     }
 }
