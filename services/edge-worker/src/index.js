@@ -33,8 +33,8 @@ export default {
                 <body style="background:#0F172A; color:white; font-family:sans-serif; text-align:center; padding-top:100px; display:flex; flex-direction:column; align-items:center;">
                     <h1 style="font-size:4rem; margin-bottom:10px;">VibePlayer</h1>
                     <div style="background:#1E293B; padding:30px; border-radius:24px; border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
-                        <p style="font-size:1.5rem; color:#94A3B8; margin-bottom:30px;">Released: v4.2.17-ELITE-ENGINE</p>
-                        <a href="https://github.com/Arman11124/vibe-player-tv/releases/tag/v4.2.17" style="display:inline-block; padding:20px 40px; background:#10B981; color:white; text-decoration:none; font-size:1.5rem; border-radius:12px; font-weight:bold;">
+                        <p style="font-size:1.5rem; color:#94A3B8; margin-bottom:30px;">Released: v4.2.19-HYDRA-RESCUE</p>
+                        <a href="https://github.com/Arman11124/vibe-player-tv/releases/tag/v4.2.19" style="display:inline-block; padding:20px 40px; background:#10B981; color:white; text-decoration:none; font-size:1.5rem; border-radius:12px; font-weight:bold;">
                             DOWNLOAD ELITE EDITION
                         </a>
                     </div>
