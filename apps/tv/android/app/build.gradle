@@ -79,8 +79,8 @@ android {
         applicationId "com.ottbrowser"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4222
-        versionName "4.2.22-HTTP-PROTOCOL"
+        versionCode 4223
+        versionName "4.2.23-IRON-TUNNEL"
         ndk {
             abiFilters "armeabi-v7a", "arm64-v8a"
         }

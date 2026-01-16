@@ -1,8 +1,8 @@
 #!/bin/bash
-# ONE-SHOT DEPLOYMENT SCRIPT
-# Copy this ENTIRE content into your VPS Web Console to deploy the Torrent Gateway.
+# IRON TUNNEL DEPLOYMENT SCRIPT (v4.2.23)
+# Copy this ENTIRE content into your VPS Web Console to deploy the Vibe Gateway.
 
-echo "🚀 Starting One-Shot Deployment..."
+echo "🚀 Starting IRON TUNNEL Deployment..."
 
 # 1. Setup Directories
 mkdir -p /opt/torrent-gateway/src
@@ -21,6 +21,7 @@ cat > package.json << 'EOF'
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "axios": "^1.6.0",
     "fluent-ffmpeg": "^2.1.3",
     "nodemon": "^3.0.3",
     "webtorrent": "^2.5.1"
@@ -67,22 +68,54 @@ class TorrentEngine {
 export default new TorrentEngine();
 EOF
 
-# 5. Create index.js
+# 5. Create index.js (WITH IRON TUNNEL PROXY)
 cat > src/index.js << 'EOF'
 import express from 'express';
 import cors from 'cors';
+import axios from 'axios';
 import TorrentEngine from './TorrentEngine.js';
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 const PORT = 3000;
-app.get('/health', (req, res) => res.json({ status: 'online' }));
+const TMDB_API_KEY = 'b93ef6c5dd891291cb040d2ffa577a7a';
+
+// --- IRON TUNNEL: TMDB PROXY ---
+app.get('/api/tmdb/*', async (req, res) => {
+    try {
+        const targetPath = req.path.replace('/api/tmdb', '');
+        const query = req.url.split('?')[1] || '';
+        const targetUrl = `https://api.themoviedb.org${targetPath}?${query}&api_key=${TMDB_API_KEY}`;
+        console.log(`[Tunnel] Proxying: ${targetPath}`);
+        const response = await axios.get(targetUrl, {
+            headers: { 'Referer': 'https://www.themoviedb.org/' },
+            validateStatus: () => true
+        });
+        res.status(response.status).json(response.data);
+    } catch (e) {
+        console.error('[Tunnel] Error:', e.message);
+        res.status(502).json({ error: 'Tunnel Failure' });
+    }
+});
+
+// --- IRON TUNNEL: IMAGE PROXY ---
+app.get('/api/image/*', (req, res) => {
+    const targetPath = req.path.replace('/api/image', '');
+    const wsrvUrl = `https://wsrv.nl/?url=https://image.tmdb.org${targetPath}`;
+    res.redirect(302, wsrvUrl);
+});
+
+// --- GATEWAY ROUTES ---
+app.get('/health', (req, res) => res.json({ status: 'online', mode: 'IRON_TUNNEL' }));
+
 app.post('/add', async (req, res) => {
     try {
         const info = await TorrentEngine.addMagnet(req.body.magnet);
         res.json(info);
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
+
 app.get('/stream/:hash/:index', (req, res) => {
     try {
         const { hash, index } = req.params;
@@ -99,6 +132,7 @@ app.get('/stream/:hash/:index', (req, res) => {
         stream.pipe(res);
     } catch (e) { if(!res.headersSent) res.status(500).end(); }
 });
+
 app.listen(PORT, () => console.log(`Gateway running on ${PORT}`));
 EOF
 
@@ -110,4 +144,4 @@ docker stop torrent-gateway || true
 docker rm torrent-gateway || true
 docker run -d --restart=always --name torrent-gateway -p 3000:3000 -v /tmp/webtorrent:/tmp/webtorrent torrent-gateway
 
-echo "✅ SUCCESS! Gateway running on port 3000."
+echo "✅ IRON TUNNEL DEPLOYED! (Port 3000)"

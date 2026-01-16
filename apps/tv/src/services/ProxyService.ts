@@ -3,12 +3,14 @@ import axios from 'axios';
 // The Swarm: Public CORS Proxies
 // These allow us to bypass ISP blocks on specific APIs by routing traffic through different countries/servers.
 const PROXIES = [
-    // 1. ELITE WORKER: Our private, high-speed tunnel (Primary)
-    // Uses HTTP to bypass SSL Handshake issues on old Android TVs
+    // 1. IRON TUNNEL: User's Private VPS (Unblockable)
+    // Direct HTTP to 167.99.201.47:3000
     {
-        name: 'elite-worker', url: (target: string) => {
+        name: 'iron-tunnel', url: (target: string) => {
             const url = new URL(target);
-            return `http://api.xn--b1a5a.fun${url.pathname}${url.search}`;
+            // target: https://api.themoviedb.org/3/movie/popular...
+            // result: http://167.99.201.47:3000/api/tmdb/3/movie/popular...
+            return `http://167.99.201.47:3000/api/tmdb${url.pathname}${url.search}`;
         }, weight: 1
     },
 
@@ -34,13 +36,13 @@ export class ProxyService {
     static async fetch(targetUrl: string, options: any = {}): Promise<any> {
         let lastError = null;
 
-        // Try ELITE WORKER first (fast/private)
+        // Try IRON TUNNEL first (Private VPS)
         try {
             const urlObj = new URL(targetUrl);
-            const eliteUrl = `http://api.xn--b1a5a.fun${urlObj.pathname}${urlObj.search}`;
-            return await axios.get(eliteUrl, { ...options, timeout: 5000 });
+            const tunnelUrl = `http://167.99.201.47:3000/api/tmdb${urlObj.pathname}${urlObj.search}`;
+            return await axios.get(tunnelUrl, { ...options, timeout: 5000 });
         } catch (e) {
-            console.warn('[Proxy] Elite Worker failed, triggering Hydra Swarm...');
+            console.warn('[Proxy] Iron Tunnel failed, triggering Swarm...');
         }
 
         // Swarm Fallback
@@ -73,7 +75,8 @@ export class ProxyService {
     static getProxiedImageUrl(path: string): string {
         if (!path) return '';
         const cleanPath = path.startsWith('/') ? path : `/${path}`;
-        return `http://api.xn--b1a5a.fun/t/p/w500${cleanPath}`;
+        // http://167.99.201.47:3000/api/image/t/p/w500/...
+        return `http://167.99.201.47:3000/api/image/t/p/w500${cleanPath}`;
     }
 
     /**
